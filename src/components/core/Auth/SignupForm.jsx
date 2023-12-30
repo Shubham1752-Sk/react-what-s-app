@@ -15,6 +15,7 @@ const SignupForm = () => {
     lastName: "",
     email: "",
     password: "",
+    mobileNumber:"",
     confirmPassword: "",
   })
 
@@ -23,7 +24,7 @@ const SignupForm = () => {
       ...prev,
       [e.target.name]: e.target.value
     }))
-    console.log(formData)
+    // console.log(formData)
   }
 
   const SignupHandler = (e) =>{
@@ -42,13 +43,19 @@ const SignupForm = () => {
     // console.log(`formdata is: ${JSON.stringify(formData) }`,formData)
 
     dispatch(setSignupData(signupData));
+    const email = formData.email;
 
-    dispatch(sendotp(formData.email, navigate))
+    const sendotpPayload = {
+      email,
+      navigate
+    }
+    dispatch(sendotp(sendotpPayload))
 
     setFormData({
       firstName: "",
       lastName: "",
       email: "",
+      mobileNumber:"",
       password: "",
       confirmPassword: "",
     })
@@ -70,9 +77,15 @@ const SignupForm = () => {
           <input type='text' onChange={handleFormData} className=' w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500' name='lastName' id="lastName" value={formData.lastName} />
         </div>
       </div>
-      <div className='py-2'>
-        <span className='mb-2 text-md'>E-mail <span className=' text-orange-2'>*</span></span>
-        <input required type='email' onChange={handleFormData} className=' w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500' name='email' id="email" value={formData.email} />
+      <div className='flex w-full space-x-4'>
+        <div className='py-2 w-1/2'>
+          <span className='mb-2 text-md'>E-mail <span className=' text-orange-2'>*</span></span>
+          <input required type='text' onChange={handleFormData} className=' w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500' name='email' id="email" value={formData.email} />
+        </div>
+        <div className='py-2 w-1/2'>
+          <span className='mb-2 text-md'>Mobile No.</span>
+          <input type='text' onChange={handleFormData} className=' w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500' name='mobileNumber' id="mobileNumber" value={formData.mobileNumber} />
+        </div>
       </div>
       <div className=' py-2'>
         <span className='mb-2 text-md'>Password <span className=' text-orange-2'>*</span></span>

@@ -8,6 +8,7 @@ async function connectToCloduinary(){
             api_secret: process.env.CLOUDINARY_SECRET
 
         })
+        console.log("Connected to cloudinary")
     } catch (error) {
         console.log(`Error connecting to database: ${error}`);
     }

@@ -5,9 +5,9 @@ const {
     login,
     signUp,
     sendotp
-} = require('../controllers/Auth')
+} = require('../controllers/AuthControllers')
 
-// router.post('/login',login)
+router.post('/login',login)
 router.post('/signup',signUp)
 router.post('/sendotp',sendotp)
 

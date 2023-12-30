@@ -1,9 +1,10 @@
 const bcrypt = require("bcrypt")
-const User = require("../models/OTP")
+const User = require("../models/User")
 const OTP = require("../models/OTP")
 const jwt = require("jsonwebtoken")
 const otpGenerator = require("otp-generator")
-const mailSender = require("../utils/mailSender")
+const Profile = require("../models/Profile")
+const sendMail = require('../mail/sendEmail');
 require('dotenv').config()
 
 exports.sendotp = async (req, res, next) =>{
@@ -41,19 +42,18 @@ exports.sendotp = async (req, res, next) =>{
             otpType: 'AccountVerification',
             createdAt: Date.now()
         })
-        console.log(email);
+        // console.log(email);
         console.log(`saved OTP is ${otpBody}`)
 
-        // sending email
         try{
-            const response=await mailSender(email,"Verification OTP",otp);
+            await sendMail.sendVerificationEmail(email,otpBody.otpCode);
         }catch(err){
+            console.log(err)
             return res.status(500).json({
                 success:false,
                 message:"Internal Sevrer Error"
             })
         }
-
         res.status(200).json({
             success: true,
             message: "OTP sent successfully",
@@ -70,6 +70,7 @@ exports.sendotp = async (req, res, next) =>{
 }
 
 exports.signUp=async(req, res, next)=>{
+    console.log("In the signup function")
     try {
         // Destructure fields from the request body
       const {
@@ -78,16 +79,17 @@ exports.signUp=async(req, res, next)=>{
         email,
         password,
         confirmPassword,
-        contactNumber,
+        mobileNumber,
         otp,
       } = req.body
     //   check if user already exsist
-      if (!firstName || !lastName  || !email || !password || !confirmPassword ||  !contactNumber || !otp ){
+      if (!firstName || !email || !password || !confirmPassword ||  !mobileNumber || !otp ){
         return res.status(403).send({
             success: false,
             message: "All Fields are required",
           })
       }
+    //   console.log("Requirements Matched!!")
     // Check if password and confirm password match
         if (password !== confirmPassword) {
             return res.status(400).json({
@@ -96,18 +98,25 @@ exports.signUp=async(req, res, next)=>{
                 "Password and Confirm Password do not match. Please try again.",
             })
         }
+        // console.log("passwords Matched!!")
     // Check if user already exists
         const existingUser = await User.findOne({ email })
+        // console.log("Existing user ",existingUser)
         if (existingUser) {
             return res.status(400).json({
                 success: false,
                 message: "User already exists. Please sign in to continue.",
             })
         } 
+        
+        // console.log("No existing user found!!")
     // find the most recent otp for this email
-        const response = await OTP.find(email).sort({ createdAt: -1}).limit(1)
-        console.log(response)
-        console.log(response)
+        const response = await OTP.findOne({email}).sort({ createdAt: -1}).limit(1)
+        // console.log(response)
+        // console.log("otp is : ",otp);
+        // console.log("otpCode is : ",response.otpCode);
+        
+        // console.log(response)
         if (response.length === 0) {
     // OTP not found for the email
         return res.status(400).json({
@@ -115,14 +124,14 @@ exports.signUp=async(req, res, next)=>{
             message: "The OTP is not valid",
         })
         }
-    // Invalid OTP
-        else if (otp !== response[0].otp) {
+    // Invalid 
+        else if (otp !== response.otpCode) {
             return res.status(400).json({
                 success: false,
                 message: "The OTP is not valid",
             })
         }
-        
+        // console.log("hasing Passwords")
     // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10)
 
@@ -131,16 +140,15 @@ exports.signUp=async(req, res, next)=>{
             gender: null,
             dateOfBirth: null,
             about: null,
-            contactNumber: null,
         })
+        console.log(profileDetails)
         const user = await User.create({
             firstName,
             lastName,
             email,
-            contactNumber,
+            mobileNumber,
             password: hashedPassword,
-            additionalDetails: profileDetails._id,
-            image: "",
+            additionalInfo: profileDetails._id,
         })
         
         return res.status(200).json({
@@ -154,6 +162,68 @@ exports.signUp=async(req, res, next)=>{
         res.status(400).json({
             success: false,
             message: "User can't be registered. Please try Again."
+        })
+    }
+}
+
+exports.login = async ( req, res, next)=>{
+    try {
+        //  get email and password from request body
+        const { email, password } = req.body;
+        
+        // check if email exists or password is null or not
+        if(!email || !password){
+            return res.status(400).json({
+                success: false,
+                message: 'All te fields are compulsory'
+            })
+        } 
+
+        // find user with entered email
+        const user = await User.findOne({email})
+        console.log("user is ", user)
+        // if no user is found with this e-mail
+        if(!user){
+            return res.status(401).json({
+                success: false,
+                message: 'No User Found with this E-mail'
+            })
+        }
+
+        // compare the given password with stored one in database
+        if( await bcrypt.compare(password, user.password)){
+            const token = jwt.sign(
+                { email: user.email, id:user._id },
+                process.env.JWT_SECRET ,
+                { expiresIn:'3h' }
+            )
+            // save token to user document in Database
+            user.token = token
+            user.password = undefined
+
+            // set cookie for token and return success
+            const options = {
+                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+                httpOnly: true
+            }
+            res.cookie("token", token, options).status(200).json({
+                success:true,
+                token,
+                user,
+                message: "User Login SuccessFul l!!"
+            })
+        }
+        else{
+            return res.status(401).json({
+                success: false,
+                message: 'Password is incorrect'
+            })
+        }
+    } catch (error) {
+        console.log("Internal server error .... ",error)
+        res.status(400).json({
+            success: false,
+            message: error.message
         })
     }
 }

@@ -1,7 +1,11 @@
 const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
-    name: {
+    firstName: {
+        type: String,
+        required: true,
+    },
+    lastName: {
         type: String,
         required: true,
     },
@@ -14,31 +18,19 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    profilePhoto: {
+    password: {
         type: String,
-    },
-    about: {
-        type: String,
-        required: true,
-    },
-    dateofJoining: {
-        type: Date,
-        default: Date.now()
-    },
-    lastActive: {
-        type: Date
+        required: true
     },
     token: {
         type: String
     },
-    otps: [{
+    profilePhoto:{
+        type: String
+    },
+    additionalInfo: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'OTP'
-    }],  
-    isActive: {
-        type: String,
-        enum: ["offline","online"],
-        default: "offline"
+        ref: 'Profile'
     },
     contacts: [{
         type: mongoose.Schema.Types.ObjectId,
