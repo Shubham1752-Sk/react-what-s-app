@@ -181,7 +181,7 @@ exports.login = async ( req, res, next)=>{
 
         // find user with entered email
         const user = await User.findOne({email})
-        console.log("user is ", user)
+        
         // if no user is found with this e-mail
         if(!user){
             return res.status(401).json({
@@ -197,8 +197,12 @@ exports.login = async ( req, res, next)=>{
                 process.env.JWT_SECRET ,
                 { expiresIn:'3h' }
             )
+            
             // save token to user document in Database
             user.token = token
+
+            await user.save()
+
             user.password = undefined
 
             // set cookie for token and return success

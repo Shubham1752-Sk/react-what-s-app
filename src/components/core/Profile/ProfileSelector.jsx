@@ -24,14 +24,14 @@ const ProfileSelector = ({options}) => {
     //   alert("File Type not Supported ....\n Try jpg, png, svg files or choose from our Library")
     //   return;
     // }
-    const imgDetail = e.target.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(imgDetail);
-    reader.onload=()=>{
-      console.log(reader);
-      options.setDefaultAvatar(reader.result);
-    }
-    // options.setDefaultAvatar(URL.createObjectURL(e.target.files[0]))
+    // const imgDetail = e.target.files[0];
+    // const reader = new FileReader();
+    // reader.readAsDataURL(imgDetail);
+    // reader.onload=()=>{
+    //   console.log(reader);
+    //   options.setDefaultAvatar(reader.result);
+    // }
+    options.setDefaultAvatar(URL.createObjectURL(e.target.files[0]))
   }
 
   const handleClick = () =>{

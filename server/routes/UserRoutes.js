@@ -1,14 +1,16 @@
-const express = require('express');
-const router = express.Router();
+const express = require("express")
+const { 
+    findUserByToken,
+    addToContacts,
+    fetchContacts,
+    removeFromContacts
+} = require("../controllers/UserControllers")
 
-const {
-    login,
-    signUp,
-    sendotp
-} = require('../controllers/AuthControllers')
+const router = express.Router()
 
-router.post('/login',login)
-router.post('/signup',signUp)
-router.post('/sendotp',sendotp)
+router.get("/getuserinfo/:token",findUserByToken)
+router.post("/addtocontacts",addToContacts)
+router.post("/removefromcontacts",removeFromContacts)
+router.get("/fetchcontacts/:id",fetchContacts)
 
 module.exports = router

@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useState,useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 import { login } from '../../../services/operations/authAPI'
+import { getUserInfo } from '../../../services/operations/UserAPI'
 
 const LoginForm = () => {
 
@@ -20,6 +21,15 @@ const LoginForm = () => {
       [e.target.name]: e.target.value
     }))
   }
+
+  const {token} = useSelector((state)=>state.auth)
+
+  useEffect(()=>{
+    // console.log(token)
+    if(token){
+      navigate("/chat")
+    }
+  })
 
   const loginHandler = (e) =>{
     e.preventDefault();
@@ -53,7 +63,7 @@ const LoginForm = () => {
       <button className=' w-full border border-gray-300 text-base p-2 rounded-lg mb-6 hover:bg-black hover:text-white ' > Sign in with Google</button>
       <div className=' text-center text-pure-greys-400 '>
         Don't have an Account
-        <span className='font-bold text-black ml-4 cursor-pointer' onClick={navigate('/signup')} >Sign Up for Free</span>
+        <span className='font-bold text-black ml-4 cursor-pointer' >Sign Up for Free</span>
       </div>
     </div>
     </form>

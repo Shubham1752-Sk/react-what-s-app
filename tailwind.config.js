@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        "chat-background": "url('/chat-bg.png')",
+        "chat-background": "url('D:/React js/What's App/react-tailwind-css-starter-pack-main/src/assets/chat-bg.png')",
       },
       colors:{
         "panel-bg": "#202c33",

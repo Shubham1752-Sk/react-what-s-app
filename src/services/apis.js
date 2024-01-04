@@ -19,4 +19,12 @@ export const profileEndpoints = {
 
 export const chatEndpoints ={
     GET_ALL_USERS: "/api/v1/chat/getallusers",
+    SEND_CHAT_MESSAGE: BASE_URL + "/api/v1/chat/sendchatmessage"
+}
+
+export const userEndpoints={
+    GET_USER_FROM_TOKEN: BASE_URL + "/api/v1/user/getuserinfo/",
+    GET_USER_CONTACTS: BASE_URL + "/api/v1/user/fetchcontacts/",
+    ADD_TO_CONTACTS: BASE_URL + "/api/v1/user/addtocontacts",
+    
 }

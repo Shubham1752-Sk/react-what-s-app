@@ -12,16 +12,17 @@ const messageSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,  
         ref: 'User'
     },
-    isRead: {
-        type: Boolean,
-        default: false
+    status: {
+        type: String,
+        enum: ['sent','seen','delivered'],
+        default: 'sent'
     },
     crearedAt: {
         type: Date
     },
     media: {
         type: String,
-    } | null ,
+    },
     
 },{ timestamps: true})
 

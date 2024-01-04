@@ -1,0 +1,7 @@
+.chat-bg{
+    /* background: image(url("../../../assets/chat-bg.png"));
+    background-position: center;
+    background-size: cover;
+    z-index: 100; */
+    background: linear-gradient(red 0%, orange 25%, yellow 50%, green 75%, blue 100%);;
+}

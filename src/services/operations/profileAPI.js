@@ -1,6 +1,6 @@
 import { toast } from "react-hot-toast";
 import { apiConnector } from "../apiConnector";
-import { setLoading } from "../../slices/ProfileSlice";
+import { setLoading, } from "../../slices/ProfileSlice";
 import { profileEndpoints } from "../apis";
 
 const {

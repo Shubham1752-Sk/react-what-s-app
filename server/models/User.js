@@ -26,7 +26,8 @@ const userSchema = new mongoose.Schema({
         type: String
     },
     profilePhoto:{
-        type: String
+        type: String,
+        default: null
     },
     additionalInfo: {
         type: mongoose.Schema.Types.ObjectId,
@@ -34,11 +35,12 @@ const userSchema = new mongoose.Schema({
     },
     contacts: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        unique: true
     }],
-    messages: [{
+    Chats: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Message'
+        ref: 'Chat'
     }],
     groups: [{
         type: mongoose.Schema.Types.ObjectId,

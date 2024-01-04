@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const User = require('../models/User');
 const Profile = require("../models/Profile")
 const {uploadToCloudinary} = require("../utils/imageUploader")
@@ -79,10 +79,10 @@ exports.updateProfilePicture = async(req,res)=>{
 exports.updateProfile = async(req, res) =>{
     try {
         console.log("in the controller")
-        const {id, about, gender, dateofBirth, profilePhoto } = req.body;
         console.log("req.body: ",req.body)
-
-        // console.log("req.files: ",req.files)
+        const {id, about, gender, dateofBirth } = req.body;
+        console.log("req.files: ",req.files)
+        const profilePhoto=req.files.profilePhoto;
         // const file = req.files.imagefile; 
         
         const user = await User.findById(id);

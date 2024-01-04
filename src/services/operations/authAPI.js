@@ -3,7 +3,7 @@ import { apiConnector } from "../apiConnector";
 import { setLoading, setToken, } from "../../slices/authSlice";
 import { setUser } from "../../slices/ProfileSlice"
 import { authEndpoints } from "../apis"
-import { useSelector } from "react-redux";
+import image from "../../assets/default_avatar.png"
 
 const {
     SENDOTP_API,
@@ -11,10 +11,6 @@ const {
     LOGIN_API,
 } = authEndpoints ;
 
-
-// const {signupData} = useSelector((state)=> state.auth );
-//     console.log("SignupDtaa is : ",signupData)
-//     const email = signupData.email;
 
 export function sendotp({email, navigate}){
     
@@ -95,12 +91,13 @@ export function login(email, password, navigate){
             console.log('LOGIN API RESPONSE ......... ', JSON.stringify(result))
             toast.success("Login Succcessfull ")
             dispatch(setToken(result.data.token))
-            const userImage = result.data?.user?.image
+            const userImage = result.data?.user?.profilePhoto
             ? result.data.user.image
-            : `https://api.dicebear.com/5.x/initials/svg?seed=${result.data.user.firstName} ${result.data.user.lastName}`
-            dispatch(setUser({ ...result.data.user, image: userImage }))
+            : image
+            // `https://api.dicebear.com/5.x/initials/svg?seed=${result.data.user.firstName} ${result.data.user.lastName}`
+            dispatch(setUser({ ...result.data.user, profilePhoto: userImage }))
             localStorage.setItem("token",JSON.stringify(result.data.token))
-            navigate("/home")
+            navigate("/chat")
         } catch (error) {
           console.log("LOGIN API ERROR............", error)
           toast.error("Login Failed")
