@@ -17,16 +17,36 @@ exports.createMessage = async(senderId, receiverId, message)=>{
         console.log("User is ",additionalInfo)
         // const {} = additionalInfo.isActive
 
+        const isActive = additionalInfo.isActive === "offline" ? false : true;
+
         const createdMessage = await Message.create({
             text: message,
             sentBy: senderId,
             sentTo: receiverId,
-            status: {
-                
-            }
+            status: isActive ? "delivered" : "sent"   
         })
+
+        return createdMessage
         
     } catch (error) {
         return Error(`Internal Server Error while creating message: ${error}`)
+    }
+}
+
+exports.updateMessageStatus = async(messageId) => {
+    try {
+        const updatedMessage = await Message.findByIdAndUpdate(
+            {_id: messageId},
+            {
+                $set: {
+                    status: "read"
+                },
+                
+            }
+        )
+
+        return updatedMessage;
+    } catch (error) {
+        return Error(`Error while setting messages ${error}`)
     }
 }

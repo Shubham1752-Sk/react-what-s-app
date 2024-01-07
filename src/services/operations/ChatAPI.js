@@ -1,10 +1,11 @@
-import { setLoading, setUsers } from "../../slices/ChatSlice";
+import { setLoading, setUsers, setChatMessages } from "../../slices/ChatSlice";
 import { apiConnector } from "../apiConnector";
 import { chatEndpoints} from "../apis";
 
 const {
     GET_ALL_USERS,
-    SEND_CHAT_MESSAGE
+    SEND_CHAT_MESSAGE,
+    GET_CHAT_MESSAGES
 } = chatEndpoints;
 
 export function getAllUsers(){
@@ -15,7 +16,8 @@ export function getAllUsers(){
             if(!response.data.success){
                 throw new Error(response.data.message)
             }
-            // console.log("Result of get All users API is: ",response.data.users)
+            console.log("Result of get All users API is: ",response.data.users)
+            dispatch(setLoading(false))
             dispatch(setUsers(response.data.users))
         } catch (error) {
             console.log("Error in Get All Users API....",error)
@@ -44,6 +46,26 @@ export function sendChatMessage(senderId, receiverId, message){
     
         } catch (error) {
             console.log("Error in Send Chat Message API....",error)
+        }finally{
+            dispatch(setLoading(false))
+        }
+    }
+}
+
+export function getChatMessages(senderid, receiverid){
+    return async(dispatch)=>{
+        dispatch(setLoading(true))
+        try {
+                const response = await apiConnector('GET',`${GET_CHAT_MESSAGES}${senderid}/${receiverid}`)
+            if (!response.data.success) {
+                throw new Error(response.data.message);
+            }
+            console.log("Get Chat Messages API response .... ",response)
+            dispatch(setChatMessages(response.data.updatedChat))
+        } catch (error) {
+            console.log("Error in Get Chat Messages API....",error)
+        }finally{
+            dispatch(setLoading(false))
         }
     }
 }

@@ -148,7 +148,7 @@ exports.signUp=async(req, res, next)=>{
             email,
             mobileNumber,
             password: hashedPassword,
-            additionalInfo: profileDetails._id,
+            additionalInfo: profileDetails._id
         })
         
         return res.status(200).json({
@@ -201,13 +201,15 @@ exports.login = async ( req, res, next)=>{
             // save token to user document in Database
             user.token = token
 
+            user.additionalInfo.isActive = 'online';
+
             await user.save()
 
             user.password = undefined
 
             // set cookie for token and return success
             const options = {
-                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+                expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
                 httpOnly: true
             }
             res.cookie("token", token, options).status(200).json({

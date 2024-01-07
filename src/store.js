@@ -12,6 +12,8 @@ import {
 import storage from 'redux-persist/lib/storage'
 
 import rootReducer from "./reducer/index"
+import { applyMiddleware } from '@reduxjs/toolkit'
+import { ThunkMiddleware } from 'redux-thunk'
 
 const persistConfig = {
   key: 'root',
@@ -22,7 +24,7 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 const store = configureStore({
-  reducer: persistedReducer,
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {

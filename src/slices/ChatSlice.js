@@ -16,12 +16,12 @@ const ChatSlice = createSlice({
         setUsers(state, value){
             state.users = value.payload;
         },
-        setChatMessage(state, value){
-            state.chat = value.payload
+        setChatMessages(state, value){
+            state.chatMessages = value.payload
         }
     }
 })
 
-export const {setLoading, setUsers, setChatMessage} = ChatSlice.actions;
+export const {setLoading, setUsers, setChatMessages} = ChatSlice.actions;
 
 export default ChatSlice.reducer;

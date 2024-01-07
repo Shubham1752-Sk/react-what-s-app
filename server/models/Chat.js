@@ -14,9 +14,8 @@ const ChatSchema = new mongoose.Schema({
         default: Date.now()
     },
     isGroupChat:{
-        type: {
-            
-        }
+        type: Boolean,
+        default: false
     },
     messages: [{
         type: mongoose.Schema.Types.ObjectId,

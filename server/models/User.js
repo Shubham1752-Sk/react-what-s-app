@@ -36,7 +36,6 @@ const userSchema = new mongoose.Schema({
     contacts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        unique: true
     }],
     Chats: [{
         type: mongoose.Schema.Types.ObjectId,

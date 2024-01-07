@@ -18,11 +18,9 @@ const Chat = () => {
   const navigate = useNavigate()
 
   const [user, setUser] = useState()
-  // const [allUsers, setAllUsers]=useState()
-  const [viewChat, setViewChat] = useState({
-    isOpened: false,
-    chatUser: null
-  })
+  const [allUsers, setAllUsers]=useState()
+  const [viewChat, setViewChat] = useState(false)
+  const [chatUser, setChatUser] = useState({})
   const [contacts, setContacts] = useState()
   // const { user } = useSelector((state)=>state.profile) 
 
@@ -32,69 +30,60 @@ const Chat = () => {
   const { loading } = useSelector((state) => state.chat)
   // console.log(loading)
 
-  // const socket = io("http://localhost:4000/");
+  // const socket = io(ENDPOINT);
 
-  const socket = socketIo(ENDPOINT)
+  // const socket = io('http://localhost');
 
   useEffect(() => {
     if (!token) return navigate('/')
 
     dispatch(getUserInfo(token, setUser, setContacts))
     // user && dispatch(getUserContacts(user._id, setContacts))
-    dispatch(getAllUsers())
+    // dispatch(getAllUsers(setAllUsers))
 
     // socket.connect()
 
-  //   io.sockets.on('connection', function(socket){
-  //     console.log("new client connected");
-  // });
-
-    socket.on('connect',()=>{
-      console.log(socket.id)
-      // alert("connected");
-    })
-    // socket.on("connect_error", () => {
-    //   socket.auth.token = "abcd";
-    //   socket.connect();
+    // io.sockets.on('connection', function(socket){
+    //   console.log("new client connected");
     // });
-    
-    return()=>{
 
-    }
+    // socket.on('connect',()=>{
+    //   console.log(socket.id)
+    //   // alert("connected");
+    // })
+    
+    // return()=>{
+    // }
 
   }, [])
-  console.log(user)
-  // user && setContacts(user.contacts)
-  console.log(contacts)
 
   const manageChat = (contact) =>{
-    // setViewChat((prev)=>{
-    //   ...prev
-    //   [viewChat.isOpened]: true
-    //   [viewChat.user]: contact
-    // })
-    setViewChat({
-      isOpened:true,
-      user:contact
-    })
+  
+    console.log("contact is ",contact)
+    // setViewChat((prev)=>({
+    //   ...prev,
+    //   isOpened: true,
+    //   chatUser: contact
+    // }))
+
+    setViewChat(true)
+    setChatUser(contact)
+
+    console.log(chatUser)
   }
 
   return (
     <div>
-      {
-        loading ? (
-          <Spinner text={"Hold on Loading ..."} />
-        ) : (
           <div className=' w-[100vw] h-[100vh] relative flex justify-start items-center mx-auto gap-4 bg-panel-bg '>
             <div className='flex flex-col relative gap-4 w-5/12 px-2 py-1 items-start h-full '>
-              <SearchBar />
+              <SearchBar user={user} allUsers={allUsers} />
               {/* <ContactList contacts={contacts} /> */}
               {
-                contacts && (
-                  <div className='w-full h-16 flex bg-[#8a8a8f63] border-b border-[#c8a3a3] justify-around items-center overflow-y-scroll px-2 py-1'>
+                contacts ? (
+                  <div className='w-full mt-4 h-16 flex-col bg-[#8a8a8f63] border-b border-[#c8a3a3] justify-around items-center gap-10 px-2 py-1'>
                     {
                       contacts.map((contact) => (
-                        <div className=' w-11/12 h-full flex gap-4 hover:cursor-pointer active:bg-transparent'
+                        <div key={contact._id} className=' w-11/12 h-full flex gap-4 hover:cursor-pointer active:bg-transparent'
                         onClick={()=>manageChat(contact)}
                         >
                           <div className='w-12 h-12 border rounded-full '>
@@ -111,21 +100,23 @@ const Chat = () => {
                       ))
                     }
                   </div>
+                ) : (
+                  <div>
+                    No Contacts Found!
+                  </div>
                 )
               }
             </div>
             <div className='w-full h-full flex justify-center items-center'>
               {
-                viewChat.isOpened ? (
-                  <ChatDialog contact={viewChat.chatUser} />
+                viewChat ? (
+                  <ChatDialog user={user} chatUser={chatUser} />
                 ) : (
                   <Spinner text={"Ready to do some GUP-SHUP!!"} />
                 )
               }
             </div>
           </div>
-        )
-      }
     </div>
   )
 }

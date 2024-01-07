@@ -1,13 +1,17 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { GrAttachment } from "react-icons/gr";
 import { IoIosSend } from "react-icons/io";
 import EmojiPicker from 'emoji-picker-react';
 import "./chat.css"
+import { useDispatch, useSelector } from 'react-redux';
+import { getChatMessages, sendChatMessage } from '../../../services/operations/ChatAPI';
+import Spinner from '../../common/Spinner';
 
-const ChatDialog = ({ chatUser }) => {
+const ChatDialog = ( {user, chatUser} ) => {
 
     const [viewEmoji, setViewEmoji] = useState(false)
     const [message,setMessage] = useState("")
+    const dispatch = useDispatch()
 
     const appendEmojiToMesaage = (emoji) => {
         var inputField = document.getElementById('message');
@@ -15,15 +19,27 @@ const ChatDialog = ({ chatUser }) => {
     }
 
     const sendMessage = () =>{
-        if(message.length === 0)
-            return;
+        // if(message.length === 0)
+        //     return;
 
-        alert(message)
-        // dispatch(sendMessage(user._id,chatUser._id,message))
+        // alert(message)
+        dispatch(sendChatMessage(user._id,chatUser._id,message))
         setMessage("")
     }
 
-    console.log(chatUser)
+   const {loading} = useSelector((state)=>state.chat)
+
+    useEffect(()=>{
+        if( user && chatUser){
+            console.log(`User is: `,user)
+            console.log(` Chat User is: `,chatUser)
+            console.log("calling dipatch")
+            const userId = user._id;
+            const chatUserId= chatUser? chatUser._id : null ;
+            dispatch(getChatMessages(userId, chatUserId))
+        }
+        
+    },[])
 
     return (
         <div className='w-full h-full flex-col justify-center items-center '>
@@ -51,6 +67,15 @@ const ChatDialog = ({ chatUser }) => {
                 <div className={`fixed z-20 ${viewEmoji ? "top-[30%] block w-fit h-full " : "top-[95%]  w-0 h-0 p-10 "} duration-500 ease-in-out bottom-1 `}>
                     <EmojiPicker onEmojiClick={(emoji) => appendEmojiToMesaage(emoji)} />
                 </div>
+                {
+                    loading ? (
+                        <Spinner text={"Loading Chat"}/>
+                    ):(
+                        <div>
+                            Chat Loaded
+                        </div>
+                    )
+                }
             </div>
             <div className='w-full flex justify-around items-center gap-2'>
                 <div className='w-2/12 h-full bg-black bg-opacity-15 gap-4 flex justify-center items-center'>
@@ -68,8 +93,8 @@ const ChatDialog = ({ chatUser }) => {
                     id="message" 
                     placeholder="Type a Message...." 
                     className=' w-full h-12  outline-none border-none bg-transparent bg-white bg-opacity-15 px-2 text-sm sm:text-base sm:px-4 md:text-lg lg:text-xl xl:text-2xl rounded-md text-secondary-green placeholder:text-secondary-green '
-                    onChange={(e)=>setMessage(e.target.value)}
                     value={message}
+                    onChange={(e)=>setMessage(e.target.value)}
                     />
                 <button className='w-fit z-40 p-2 bg-black bg-opacity-15 hover:bg-white hover:bg-opacity-15 backdrop-blur-sm rounded-sm hover:p-3 hover:text-xl duration-75 ease-in text-white text-3xl'
                     onClick={sendMessage}
