@@ -2,8 +2,13 @@ const mongoose = require('mongoose')
 const User = require("../models/User")
 const Chat = require("../models/Chat")
 const Profile = require("../models/Profile")
-const { createMessage, updateMessageStatus } = require("./MessageControllers")
+const { createMessage, createMediaMessage } = require("./MessageControllers")
 const Message = require('../models/Message')
+const cloudinary=require("cloudinary").v2;
+const multer=require("multer");
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 exports.getAllUsers = async (req, res) => {
     try {
@@ -34,10 +39,34 @@ exports.getAllUsers = async (req, res) => {
 exports.sendChatMessage = async (req, res) => {
     try {
 
-        const { senderId, receiverId, message } = req.body;
+        const { senderId, receiverId, message, file } = req.body;
+        
+        console.log(message)
+        console.log(file)
+        
+        if(file){
+            var fileType = file.split("/")[0].split(":")[1]
 
-        const sentMessage = await createMessage(senderId, receiverId, message)
-        console.log(sentMessage)
+            const messageUrl=await cloudinary.uploader.upload_large(file,{
+                // upload_preset: process.env.UPLOAD_PRESET,
+                folder:process.env.FOLDER_NAME ,
+                resource_type: fileType === 'image' ? 'image' : "video",
+            })
+            console.log("Message url is",messageUrl.secure_url);
+            var url = messageUrl.secure_url
+        }
+
+        let sentMessage
+        if(message){
+            sentMessage = await createMessage(senderId, receiverId, message)
+            console.log("sent msg",sentMessage)
+            
+        }
+        else{
+            sentMessage = await createMediaMessage(senderId, receiverId, url, fileType)
+            console.log('media sent msg',sentMessage)
+    
+        }
 
         const oldChats = await Chat.findOne(
             {
@@ -62,7 +91,7 @@ exports.sendChatMessage = async (req, res) => {
             }
         )
 
-        // console.log("Old Chat: ", oldChats)
+        console.log("Old Chat: ", oldChats)
 
         // if no old chat is found we need to create a new one and push it in both the users chat
         if (!oldChats) {
@@ -132,8 +161,8 @@ exports.sendChatMessage = async (req, res) => {
             model: "Message",
         })
 
-        // console.log("Updated Chat: ", updatedChat)
-        // console.log(messages)
+        console.log("Updated Chat: ", updatedChat)
+        console.log(messages)
 
         return res.status(200).json({
             success: true,
@@ -156,6 +185,102 @@ exports.sendChatMessage = async (req, res) => {
 //         updatedMessages.push(updateMessageStatus(message._id));
 //     });
     
+// }
+
+// exports.sendMediaMessage = async(req,res)=>{
+//     try{
+//         const {senderId,receiverId,file}=req.body;
+
+//         const fileType = file.split("/")[0].split(":")[1]
+
+//         const ImageUrl=await cloudinary.uploader.upload_large(file,{
+//             // upload_preset: process.env.UPLOAD_PRESET,
+//             folder:process.env.FOLDER_NAME ,
+//             resource_type: fileType === 'image' ? 'image' : "video",
+//         })
+//         console.log("Image url is",ImageUrl.secure_url);
+//         const url = Image.secure_url
+
+//         const sentMessage = await createMediaMessage(senderId, receiverId, url)
+//         console.log(sentMessage)
+        
+//         const oldChats = await Chat.findOne(
+//             {
+//                 $and: [
+//                     {
+//                         sender: {
+//                             $in: [
+//                                 { "_id": senderId },
+//                                 { "_id": receiverId }
+//                             ]
+//                         }
+//                     },
+//                     {
+//                         receiver: {
+//                             $in: [
+//                                 { "_id": senderId },
+//                                 { "_id": receiverId }
+//                             ]
+//                         }
+//                     }
+//                 ]
+//             }
+//         )
+
+//         if (!oldChats) {
+//             try {
+//                 console.log("Going to create new Chat")
+//                 let newChat = await Chat.create({
+//                     sender: senderId,
+//                     receiver: receiverId,
+//                     messages: sentMessage._id,
+//                     unseenMessages: sentMessage._id
+//                 })
+//                 // console.log("New Chat: ", newChat)
+
+//                 const Users = await User.updateMany(
+//                     {
+//                         $or: [
+//                             { "_id": senderId },
+//                             { "_id": receiverId }
+//                         ]
+//                     },
+//                     {
+//                         $push: { "Chats": newChat._id },
+//                     },
+//                     { upsert: true },
+//                     { multi: true },
+//                     { new: true }
+//                 )
+
+//                 // console.log("updated Users: ", Users)
+
+//                 return res.status(200).json({
+//                     success: true,
+//                     message: "New Chat Created SuccessFully with media message!!",
+//                     messages: sentMessage
+//                 })
+//             } catch (error) {
+//                 return res.status(500).json({
+//                     success: true,
+//                     message: `Internal Server Error while creating New Chat media message ${error}`
+//                 })
+//             }
+//         }
+
+
+        
+//         res.status(200).json({
+//             success: true,
+//             message: "Media Mesaage sent successfully!!",
+//             messages
+//         })
+//     }catch(error){
+//         return res.status(500).json({
+//             success: false,
+//             message: `Internal Server Error while Sending Media Message: ${error}`
+//         })
+//     }
 // }
 
 exports.getChatMessages = async (req, res) => {

@@ -18,12 +18,12 @@ const Chat = () => {
   const navigate = useNavigate()
 
   // const [user, setUser] = useState()
-  const [allUsers, setAllUsers]=useState()
+  const [allUsers, setAllUsers] = useState()
   const [viewChat, setViewChat] = useState(false)
   const [chatUser, setChatUser] = useState({})
   // const [contacts, setContacts] = useState()
 
-  const { contacts } = useSelector((state)=>state.chat)
+  const { contacts, chatMessages } = useSelector((state) => state.chat)
 
   // const { user } = useSelector((state)=>state.auth) 
 
@@ -32,7 +32,7 @@ const Chat = () => {
   // const fixedToken = token;
   // console.log(fixedToken)
   // console.log(token)
-  const {  user } = useSelector((state) => state.chat)
+  const { user } = useSelector((state) => state.chat)
   // console.log(token)
 
   // const socket = io(ENDPOINT);
@@ -42,7 +42,7 @@ const Chat = () => {
   useEffect(() => {
     if (!token) alert("no token")
 
-    if(token){
+    if (token) {
       console.log("getting user info")
       dispatch(getUserInfo(token))
     }
@@ -60,21 +60,21 @@ const Chat = () => {
     //   console.log(socket.id)
     //   // alert("connected");
     // })
-    
+
     // return()=>{
     // }
 
   }, [token])
 
-  useEffect(()=>{
-    if(token){
+  useEffect(() => {
+    if (token) {
 
     }
-  },[token])
-  console.log("contacts",contacts)
+  }, [token])
+  console.log("contacts", contacts)
 
-  const manageChat = (contact) =>{
-  
+  const manageChat = (contact) => {
+
     // console.log("contact is ",contact)
     // setViewChat((prev)=>({
     //   ...prev,
@@ -92,49 +92,50 @@ const Chat = () => {
 
   return (
     <div>
-          <div className=' w-[100vw] h-[100vh] relative flex justify-start items-center mx-auto gap-4 bg-panel-bg '>
-            <div className='flex flex-col relative gap-4 w-5/12 px-2 py-1 items-start h-full '>
-              <SearchBar user={user} allUsers={allUsers} />
-              {/* <ContactList contacts={contacts} /> */}
-              {
-                contacts ? (
-                  <div className='w-full mt-4 h-16 flex-col bg-[#8a8a8f63] border-b border-[#c8a3a3] justify-around items-center gap-10 px-2 py-1'>
-                    {
-                      contacts.map((contact) => (
-                        <div key={contact._id} className=' w-11/12 h-full flex gap-4 hover:cursor-pointer active:bg-transparent'
-                        onClick={()=>manageChat(contact)}
+      <div className=' w-[100vw] h-[100vh] relative flex justify-start items-center mx-auto gap-4 bg-panel-bg '>
+        <div className='flex flex-col relative gap-4 w-5/12 px-2 py-1 items-start h-full '>
+          <SearchBar user={user} allUsers={allUsers} />
+          {/* <ContactList contacts={contacts} /> */}
+          {
+            contacts ? (
+                <div className=' w-full mt-4 flex-col bg-transparent  justify-around items-center space-y-2 px-2 py-1'>
+                  {
+                    contacts.map((contact) => (
+                      <div className=' h-20 bg-white bg-opacity-10 rounded-xl gap-4 flex justify-start px-1 items-center border-b-[3px] hover:border-l-4 hover:border-b-8 duration-100 ease-in border-[#444f4b] hover:cursor-pointer'
+                        onClick={() => manageChat(contact)} 
                         >
-                          <div className='w-12 h-12 border rounded-full '>
-                            <img
-                              src={contact.profilePhoto}
-                              alt="avatar"
-                            />
-                          </div>
-                          <div className='flex-col '>
-                            <p className='text-lg text-secondary-green'>{`${contact.firstName} ${contact.lastName}`}</p>
-                            <p className='text-sm text-secondary-green'>last message</p>
-                          </div>
+                        <div className='w-16 h-16 border rounded-full '>
+                          <img
+                            src={contact.profilePhoto}
+                            alt="avatar"
+                          />
                         </div>
-                      ))
-                    }
-                  </div>
-                ) : (
-                  <div>
-                    No Contacts Found!
-                  </div>
-                )
-              }
-            </div>
-            <div className='w-full h-full flex justify-center items-center'>
-              {
-                viewChat ? (
-                  <ChatDialog user={user} chatUser={chatUser} />
-                ) : (
-                  <Spinner text={"Ready to do some GUP-SHUP!!"} />
-                )
-              }
-            </div>
-          </div>
+                        <div className='flex-col '>
+                          <p className='text-xl text-secondary-green'>{`${contact.firstName} ${contact.lastName}`}</p>
+                          {/* <p className='text-sm text-secondary-green'>last message</p> */}
+                        </div>
+                      </div>
+                    ))
+                  }
+                </div>
+              
+            ) : (
+              <div>
+                No Contacts Found!
+              </div>
+            )
+          }
+        </div>
+        <div className='w-full h-full flex justify-center items-center'>
+          {
+            viewChat ? (
+              <ChatDialog user={user} chatUser={chatUser} />
+            ) : (
+              <Spinner text={"Ready to do some GUP-SHUP!!"} />
+            )
+          }
+        </div>
+      </div>
     </div>
   )
 }

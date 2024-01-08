@@ -20,7 +20,8 @@ export const profileEndpoints = {
 export const chatEndpoints ={
     GET_CHAT_MESSAGES: BASE_URL + '/api/v1/chat/getchatmessages/',
     SEND_CHAT_MESSAGE: BASE_URL + "/api/v1/chat/sendchatmessage",
-    GET_ALL_USERS: "/api/v1/chat/getallusers",
+    SEND_MEDIA_MESSAGE: BASE_URL + "/api/v1/chat/sendmediamessage",
+    GET_ALL_USERS:BASE_URL+ "/api/v1/chat/getallusers",
 }
 
 export const userEndpoints={

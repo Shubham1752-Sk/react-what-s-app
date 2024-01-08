@@ -21,7 +21,12 @@ const messageSchema = new mongoose.Schema({
         type: Date
     },
     media: {
-        type: String,
+        url:{
+            type:String,
+        },
+        media_type:{
+            type:String,
+        }
     },
     
 },{ timestamps: true})

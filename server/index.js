@@ -26,7 +26,9 @@ dotenv.config()
 const PORT = process.env.PORT || 4000;
 console.log(PORT)
 
-app.use(express.json());
+app.use(express.json({
+    limit: '150mb'
+  }));
 app.use(cors({
     origin:"*",
 }))

@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { setLoading, setChatMessages } from "../../slices/ChatSlice";
 import { apiConnector } from "../apiConnector";
 import { chatEndpoints} from "../apis";
@@ -5,7 +6,8 @@ import { chatEndpoints} from "../apis";
 const {
     GET_ALL_USERS,
     SEND_CHAT_MESSAGE,
-    GET_CHAT_MESSAGES
+    GET_CHAT_MESSAGES,
+    SEND_MEDIA_MESSAGE
 } = chatEndpoints;
 
 export function getAllUsers(setUsers){
@@ -44,8 +46,8 @@ export function sendChatMessage(senderId, receiverId, message){
     
             console.log("Send Message API response .... ",response)
             // console.log(response.data.updatedChat.messages)
-            const messages = response.data.messages.messages
-            console.log(messages)
+            // const messages = response.data.messages.messages
+            // console.log(messages)
 
             dispatch(setChatMessages(response.data.messages.messages))
             // dispatch(getChatMessages(senderId,receiverId))
@@ -54,6 +56,34 @@ export function sendChatMessage(senderId, receiverId, message){
         }finally{
             dispatch(setLoading(false))
         }
+    }
+}
+
+export function sendMediaMessage({senderId,receiverId,file}){
+    return async(dispatch)=>{
+        const toasId=toast.loading("Loading..");
+        dispatch(setLoading(true));
+        // console.log("sender",senderId)
+        // console.log("receiver",receiverId)
+        // console.log("before",file)
+        // const updatedFile = JSON.stringify(file)
+        // console.log("file",updatedFile)
+        console.log(SEND_MEDIA_MESSAGE)
+        try{
+            const response=await apiConnector("POST",SEND_CHAT_MESSAGE,{
+                senderId,
+                receiverId,
+                file
+            });
+            if(!response.data.success){
+                throw new Error(response.data.message)
+            }
+            console.log("Send media Message API response .... ",response)
+            dispatch(setChatMessages(response.data.messages.messages))
+        }catch(err){
+            console.log(err);
+        }
+        dispatch(setLoading(false));
     }
 }
 
@@ -66,7 +96,7 @@ export function getChatMessages(senderid, receiverid){
                 throw new Error(response.data.message);
             }
             console.log("Get Chat Messages API response .... ",response.data.messages)
-            console.log(JSON.stringify(response.data))
+            // console.log(JSON.stringify(response.data))
             // const messages = response.data.messages
             // console.log(messages)
             dispatch(setChatMessages(response.data.messages))
