@@ -10,6 +10,7 @@ const SearchBar = ({ user, allUsers }) => {
   const dispatch = useDispatch()
 
   const [suggestions, setSuggestions] = useState(null)
+  const [users, setUsers] = useState()
   const [number, setNumber] = useState("")
   const [hover, setHover] = useState(false)
   const [viewtext, setViewText] = useState(false)
@@ -18,12 +19,11 @@ const SearchBar = ({ user, allUsers }) => {
   const { loading } = useSelector((state) => state.chat)
   // const [user, setUser] = useState()
 
-  const { users } = useSelector((state) => state.chat)
+  // const { users } = useSelector((state) => state.chat)
   // const { token } = useSelector((state)=>state.auth)
   // const { user } = dispatch(getUserInfo(token))
   // const {user} = useSelector((state) => state.profile)
-  console.log(user)
-  console.log(users)
+  // console.log(user)
 
   const handleChange = (e) => {
     setNumber(
@@ -40,22 +40,19 @@ const SearchBar = ({ user, allUsers }) => {
   }
 
   useEffect(() => {
-    dispatch(getAllUsers())
-  }, [])
+    dispatch(getAllUsers(setUsers))
+  }, [user])
+  // console.log(users)
 
   const addUser = (contactId) => {
-    console.log(`user id is : ${user._id}, contact id is : ${contactId}`)
+    // console.log(`user id is : ${user._id}, contact id is : ${contactId}`)
     dispatch(addToContacts(user._id, contactId))
   }
 
   // console.log(users)
 
   return (
-    <div className='w-full h-10'>
-      {loading ? (
-        <div>loading</div>
-      ) : (
-        <div className='h-full w-full flex justify-around gap-2 flex-wrap items-center mt-4 px-4 py-2 rounded-lg bg-white bg-opacity-20 backdrop-blur-sm shadow-sm shadow-black'>
+        <div className='h-[7%] w-full flex justify-around gap-2 flex-wrap items-center mt-4 px-4 py-2 rounded-lg bg-white bg-opacity-20 backdrop-blur-sm shadow-sm shadow-black'>
           <div className='w-full h-full flex justify-center items-center gap-2'>
             <div className=' w-11/12 '>
               <input
@@ -119,8 +116,7 @@ const SearchBar = ({ user, allUsers }) => {
             )
           }
         </div>
-      )}
-    </div>
+      
   )
 }
 

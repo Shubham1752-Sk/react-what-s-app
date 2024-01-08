@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getAllUsers } from '../services/operations/ChatAPI'
+import { getChatMessages } from '../services/operations/ChatAPI'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { getUserContacts, getUserInfo, getuserinfo } from '../services/operations/UserAPI'
@@ -17,27 +17,36 @@ const Chat = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate()
 
-  const [user, setUser] = useState()
+  // const [user, setUser] = useState()
   const [allUsers, setAllUsers]=useState()
   const [viewChat, setViewChat] = useState(false)
   const [chatUser, setChatUser] = useState({})
-  const [contacts, setContacts] = useState()
-  // const { user } = useSelector((state)=>state.profile) 
+  // const [contacts, setContacts] = useState()
 
+  const { contacts } = useSelector((state)=>state.chat)
+
+  // const { user } = useSelector((state)=>state.auth) 
 
   const { token } = useSelector((state) => state.auth)
+  // const token = sessionStorage.getItem("token") ? JSON.parse()
+  // const fixedToken = token;
+  // console.log(fixedToken)
   // console.log(token)
-  const { loading } = useSelector((state) => state.chat)
-  // console.log(loading)
+  const {  user } = useSelector((state) => state.chat)
+  // console.log(token)
 
   // const socket = io(ENDPOINT);
 
   // const socket = io('http://localhost');
 
   useEffect(() => {
-    if (!token) return navigate('/')
+    if (!token) alert("no token")
 
-    dispatch(getUserInfo(token, setUser, setContacts))
+    if(token){
+      console.log("getting user info")
+      dispatch(getUserInfo(token))
+    }
+
     // user && dispatch(getUserContacts(user._id, setContacts))
     // dispatch(getAllUsers(setAllUsers))
 
@@ -55,21 +64,30 @@ const Chat = () => {
     // return()=>{
     // }
 
-  }, [])
+  }, [token])
+
+  useEffect(()=>{
+    if(token){
+
+    }
+  },[token])
+  console.log("contacts",contacts)
 
   const manageChat = (contact) =>{
   
-    console.log("contact is ",contact)
+    // console.log("contact is ",contact)
     // setViewChat((prev)=>({
     //   ...prev,
     //   isOpened: true,
     //   chatUser: contact
     // }))
 
+    dispatch(getChatMessages(user._id, contact._id))
+
     setViewChat(true)
     setChatUser(contact)
 
-    console.log(chatUser)
+    // console.log(chatUser)
   }
 
   return (

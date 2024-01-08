@@ -1,7 +1,7 @@
 import { toast } from "react-hot-toast";
 import { apiConnector } from "../apiConnector";
-import { setUser } from "../../slices/ProfileSlice"
-import { setLoading } from "../../slices/ChatSlice";
+// import { setUser } from "../../slices/ProfileSlice"
+import { setLoading, setUser, setContacts } from "../../slices/ChatSlice";
 import { userEndpoints } from "../apis";
 
 const {
@@ -10,7 +10,7 @@ const {
     GET_USER_CONTACTS
 } = userEndpoints;
 
-export  function getUserInfo(token,setUser, setContacts){
+export  function getUserInfo(token){
     return async(dispatch)=>{
         console.log("in the api")
         dispatch(setLoading(true))
@@ -21,10 +21,10 @@ export  function getUserInfo(token,setUser, setContacts){
                 throw new Error(response.data.message)
             }
             console.log("user info: ", response.data);
-            setUser({...response.data.user})
+            dispatch(setUser({...response.data.user}))
             console.log("user Data set..")
             dispatch(setLoading(false))
-            setContacts(response.data.user.contacts)
+            dispatch(setContacts(response.data.user.contacts))
         } catch (error) {
             console.log("Error in Get User Info API.... ", error)
         } finally{
@@ -63,8 +63,8 @@ export function addToContacts(id, contactId, dispatch){
             if(!response.data.success){
                 throw new Error(response.data.message)
             }
-            console.log("user info: ", response.data);
-            setUser(...response.data.updatedUser)
+            console.log("Add To Contacts API response .....", response.data);
+            dispatch(setUser({...response.data.updatedUser}))
         } catch (error) {
             console.log("Error in Add To Contacts API.... ", error)
         } finally{

@@ -69,7 +69,7 @@ exports.sendotp = async (req, res, next) =>{
     }
 }
 
-exports.signUp=async(req, res, next)=>{
+exports.signUp = async(req, res, next)=>{
     console.log("In the signup function")
     try {
         // Destructure fields from the request body
@@ -216,7 +216,7 @@ exports.login = async ( req, res, next)=>{
                 success:true,
                 token,
                 user,
-                message: "User Login SuccessFul l!!"
+                message: "User Login Successfull !!"
             })
         }
         else{

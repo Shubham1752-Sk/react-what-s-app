@@ -5,7 +5,7 @@ const database = require("./config/database");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("./config/cloudinary");
 const http = require("http");
-const socketIO = require("socket.io");
+const { Server } = require("socket.io");
 
 
 const AuhtRoutes = require("./routes/AuthRoutes")
@@ -15,11 +15,12 @@ const userRoutes = require("./routes/UserRoutes")
 
 const app = express()
 const httpServer = http.createServer(app);
-const io = socketIO(httpServer, {
+const io = new Server(httpServer, {
     cors: {
-      origin: "*",
+      origins: "*",
       methods: ["GET", "POST"]
-    }})
+    }
+})
 dotenv.config()
 
 const PORT = process.env.PORT || 4000;
@@ -47,10 +48,31 @@ app.get('/',(req,res)=>{
 //     console.log(`Server is running `)
 // })
 
-io.on("connection", () => {
-    // ...
-    console.log("new connection")
-  });
+const onlineUsers = new Map()
+// io.on("connection", (socket) => {
+//     console.log("new connection",socket.id)
+
+//     socket.on("joined",(data)=>{
+//         console.log(data);
+//         console.log(`${data._id} has joined`)
+//     })
+//     // global.chatSocket = socket;
+//     // socket.on("add-user", (userId) =>{
+//     //     // console.log(userId)
+//     //     onlineUsers.set(userId, socket.id)
+//     // });
+//     // console.log(onlineUsers)
+//     socket.on("send-msg",async(data)=>{
+//         console.log("send event emited")
+//         const sendUserSocket =await onlineUsers.get(data.to._id)
+//         if(sendUserSocket){
+//             socket.to(sendUserSocket).emit("msg-received",{
+//                 from: data.from,
+//                 message: data.message
+//             })
+//         }
+//     })
+//   });
   
 httpServer.listen(PORT,()=>{
     console.log(`Server is running `)

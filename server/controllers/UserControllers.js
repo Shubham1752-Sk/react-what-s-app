@@ -4,8 +4,8 @@ const User = require("../models/User")
 
 exports.findUserByToken = async(req, res)=>{
     try {
-        console.log(" in the controller")
-        console.log(req.params)
+        // console.log(" in the controller")
+        // console.log(req.params)
         const {token} = req.params
 
         if(!token){
@@ -15,16 +15,21 @@ exports.findUserByToken = async(req, res)=>{
             })
         }
 
-        console.log(token)
+        // console.log(token)
 
         const user = await User.findOne({token}).populate({
             path: "contacts",
-            select: "firstName lastName profilePhoto "
+            select: "firstName lastName profilePhoto additionalInfo",
+            populate: ({
+                path: 'additionalInfo',
+                model: "Profile",
+                select: "about isActive"
+            })
         })
 
-        console.log(user)
+        // console.log(user)
         if(!user){
-            return res.json(400).json({
+            return res.status(400).json({
                 success:false,
                 message: "No User found with this token !!"
             })
@@ -46,24 +51,24 @@ exports.findUserByToken = async(req, res)=>{
     }
 }
 
-exports.fetchContacts = async(req, res)=>{
-    try {
-        const { id } = req.params;
-        const contacts = await User.findOne({_id:id}).select('contacts').populate({
-            path: 'contacts',
-            model: "User",
-            select: "firstName lastName profilePhoto"
-        })
+// exports.fetchContacts = async(req, res)=>{
+//     try {
+//         const { id } = req.params;
+//         const contacts = await User.findOne({_id:id}).select('contacts').populate({
+//             path: 'contacts',
+//             model: "User",
+//             select: "firstName lastName profilePhoto"
+//         })
 
-        return res.status(200).json({
-            success: true,
-            message: "Contacts Fetched!!",
-            contacts
-        })
-    } catch (error) {
-        console.log(error)
-    }
-}
+//         return res.status(200).json({
+//             success: true,
+//             message: "Contacts Fetched!!",
+//             contacts
+//         })
+//     } catch (error) {
+//         console.log(error)
+//     }
+// }
 
 // async function fetchUserContacts(id){
 //     try {
@@ -82,14 +87,13 @@ exports.fetchContacts = async(req, res)=>{
 exports.addToContacts = async (req, res) =>{
     try {
         const { id, contactId } = req.body
-        console.log(`Id: ${id} contact id: ${contactId}`)
+        // console.log(`Id: ${id} contact id: ${contactId}`)
         
         const {contacts} = await User.findById(id).select('contacts')
         // populate({
         //     path: 'contacts',
         //     model: 'User',
         //     select: "_id ",
-            
         // })
     
         // contacts.forEach(contact => {
@@ -99,15 +103,16 @@ exports.addToContacts = async (req, res) =>{
         // contacts.map((contact)=>{
         //     console.log(contact)
         // })
+        // console.log(contacts)
         const isContactAlreadyAdded = (contacts.filter((contact)=> contact.toString() === contactId)).length ;
-        console.log(isContactAlreadyAdded)
+        // console.log(isContactAlreadyAdded)
         if(isContactAlreadyAdded !== 0){
             return res.status(409).json({
                 success: false,
                 message: 'This Contact is already in your list'
             })
         }
-
+        // console.log("pushing contact")
         const updatedUser = await User.findByIdAndUpdate(
             {_id: id},
             {$push: {"contacts": contactId}},
@@ -116,13 +121,14 @@ exports.addToContacts = async (req, res) =>{
         
         console.log(updatedUser)
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: `Contact Added successfully!!`,
             updatedUser
         })
         
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
             suucess: false,
             message: `Internal Server Error: ${error}`
@@ -133,7 +139,7 @@ exports.addToContacts = async (req, res) =>{
 exports.removeFromContacts = async(req, res)=>{
     try {
         const { id, contactId } = req.body
-        console.log(`Id: ${id} contact id: ${contactId}`)
+        // console.log(`Id: ${id} contact id: ${contactId}`)
 
         // const user = await User.findById(id)
         // .populate({
@@ -161,15 +167,9 @@ exports.removeFromContacts = async(req, res)=>{
         const updatedUser = await User.findOneAndUpdate(
             {_id: id},
             {
-                $pull:{
-                    contacts: {
-                       $eq: {
-                        _id: contactId
-                       }
-                    }
-                }
+                $pull:{contacts: contactId}
             },
-            {new: true}
+            {new: true},
         )
 
         console.log(updatedUser)

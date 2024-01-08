@@ -11,6 +11,6 @@ const router = express.Router()
 router.get("/getuserinfo/:token",findUserByToken)
 router.post("/addtocontacts",addToContacts)
 router.post("/removefromcontacts",removeFromContacts)
-router.get("/fetchcontacts/:id",fetchContacts)
+// router.get("/fetchcontacts/:id",fetchContacts)
 
 module.exports = router

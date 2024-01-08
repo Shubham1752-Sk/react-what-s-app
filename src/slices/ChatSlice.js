@@ -2,8 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     loading: false,
-    users: null,
-    chatMessages: null,
+    user: null,
+    chatMessages: [],
+    contacts: [],
+    socket: null
 }
 
 const ChatSlice = createSlice({
@@ -13,15 +15,21 @@ const ChatSlice = createSlice({
         setLoading(state, value){
             state.loading = value.payload
         },
-        setUsers(state, value){
-            state.users = value.payload;
+        setUser(state, value){
+            state.user = value.payload;
+        },
+        setContacts(state, value){
+            state.contacts = value.payload;
         },
         setChatMessages(state, value){
             state.chatMessages = value.payload
+        },
+        setSocket(state, value){
+            state.socket = value.payload
         }
     }
 })
 
-export const {setLoading, setUsers, setChatMessages} = ChatSlice.actions;
+export const {setLoading, setUser, setContacts, setChatMessages, setSocket} = ChatSlice.actions;
 
 export default ChatSlice.reducer;

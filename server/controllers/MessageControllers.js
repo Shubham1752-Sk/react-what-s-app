@@ -14,7 +14,7 @@ exports.createMessage = async(senderId, receiverId, message)=>{
             path:"additionalInfo",
             model: 'Profile'
         })
-        console.log("User is ",additionalInfo)
+        // console.log("User is ",additionalInfo)
         // const {} = additionalInfo.isActive
 
         const isActive = additionalInfo.isActive === "offline" ? false : true;
@@ -33,19 +33,26 @@ exports.createMessage = async(senderId, receiverId, message)=>{
     }
 }
 
-exports.updateMessageStatus = async(messageId) => {
+exports.updateMessageStatus = async(unseenMessages, receiverId) => {
     try {
-        const updatedMessage = await Message.findByIdAndUpdate(
-            {_id: messageId},
-            {
-                $set: {
-                    status: "read"
-                },
-                
-            }
+
+        const targettedMessages = await Message.updateOne(
+            {_id: {$in: unseenMessages.toSting() } , sentTo:receiverId}
         )
 
-        return updatedMessage;
+        console.log("target message",targettedMessages)
+
+        // const updatedMessage = await Message.findByIdAndUpdate(
+        //     {_id: messageId , sentTo:receiverId },
+        //     {
+        //         $set: {
+        //             status: "read"
+        //         },
+                
+        //     }
+        // )
+
+        // return updatedMessage;
     } catch (error) {
         return Error(`Error while setting messages ${error}`)
     }

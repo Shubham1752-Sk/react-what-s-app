@@ -1,7 +1,7 @@
 import { toast } from "react-hot-toast";
 import { apiConnector } from "../apiConnector";
 import { setLoading, setToken, } from "../../slices/authSlice";
-import { setUser } from "../../slices/ProfileSlice"
+import { setUser } from "../../slices/ChatSlice"
 import { authEndpoints } from "../apis"
 import image from "../../assets/default_avatar.png"
 
@@ -96,7 +96,8 @@ export function login(email, password, navigate){
             : image
             // `https://api.dicebear.com/5.x/initials/svg?seed=${result.data.user.firstName} ${result.data.user.lastName}`
             dispatch(setUser({ ...result.data.user, profilePhoto: userImage }))
-            localStorage.setItem("token",JSON.stringify(result.data.token))
+            sessionStorage.setItem("token",JSON.stringify(result.data.token))
+            // localStorage.setItem("token",JSON.stringify(result.data.token))
             navigate("/chat")
         } catch (error) {
           console.log("LOGIN API ERROR............", error)

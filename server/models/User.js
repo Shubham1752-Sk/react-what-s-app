@@ -27,7 +27,6 @@ const userSchema = new mongoose.Schema({
     },
     profilePhoto:{
         type: String,
-        default: null
     },
     additionalInfo: {
         type: mongoose.Schema.Types.ObjectId,
