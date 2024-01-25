@@ -2,7 +2,8 @@ import toast from "react-hot-toast";
 import { setLoading, setChatMessages } from "../../slices/ChatSlice";
 import { apiConnector } from "../apiConnector";
 import { chatEndpoints} from "../apis";
-
+// import { createReadStream } from "fs";
+// import * as fs from "node:fs"
 const {
     GET_ALL_USERS,
     SEND_CHAT_MESSAGE,
@@ -59,22 +60,26 @@ export function sendChatMessage(senderId, receiverId, message){
     }
 }
 
-export function sendMediaMessage({senderId,receiverId,file}){
+export function sendMediaMessage({senderId,receiverId,audiofile,url}){
     return async(dispatch)=>{
         const toasId=toast.loading("Loading..");
+        
         dispatch(setLoading(true));
-        // console.log("sender",senderId)
-        // console.log("receiver",receiverId)
-        // console.log("before",file)
-        // const updatedFile = JSON.stringify(file)
-        // console.log("file",updatedFile)
-        console.log(SEND_MEDIA_MESSAGE)
+        console.log("sender",senderId)
+        console.log("receiver",receiverId)
+        console.log("file is: ",audiofile)
+
         try{
             const response=await apiConnector("POST",SEND_CHAT_MESSAGE,{
                 senderId,
                 receiverId,
-                file
+                audiofile,
+                url
+            },{
+                "Content-Type":"multipart/form-data",
+                // 'Content-Type': 'application/octet-stream'
             });
+
             if(!response.data.success){
                 throw new Error(response.data.message)
             }

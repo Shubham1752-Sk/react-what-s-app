@@ -6,6 +6,7 @@ const { createMessage, createMediaMessage } = require("./MessageControllers")
 const Message = require('../models/Message')
 const cloudinary=require("cloudinary").v2;
 const multer=require("multer");
+const {renameSync} = require("fs")
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -39,13 +40,41 @@ exports.getAllUsers = async (req, res) => {
 exports.sendChatMessage = async (req, res) => {
     try {
 
-        const { senderId, receiverId, message, file } = req.body;
-        
-        console.log(message)
-        console.log(file)
+        // console.log("req.body is: ",req.body)
+        // console.log("req.files is: ",req.files)
+        // console.log(req.body)
+        const { senderId, receiverId, file, url, message } = req.body;
+
+        let sentMessage
+        // console.log(message)
+        // console.log(url)
+        // console.log(file)
+        if(req.files){
+            const audioFile = req.files.audiofile;
+            // console.log(audioFile.data)
+            const date = Date.now()
+            if(req.file){
+                // console.log("req.file: ",req.file)
+                let filename = "uploads/recordings"+date+audioFile.name
+                // console.log("filename: ",filename)
+                renameSync(audioFile.tempFilePath , filename)
+                
+                sentMessage = await createMediaMessage(senderId, receiverId )
+            }
+            
+        }
+        // return
+        // console.log(message)
+        // console.log(url)
+        // console.log("file is: ",file)
+
+        // if(audioFile){
+
+        // }
         
         if(file){
             var fileType = file.split("/")[0].split(":")[1]
+            console.log(fileType)
 
             const messageUrl=await cloudinary.uploader.upload_large(file,{
                 // upload_preset: process.env.UPLOAD_PRESET,
@@ -53,19 +82,19 @@ exports.sendChatMessage = async (req, res) => {
                 resource_type: fileType === 'image' ? 'image' : "video",
             })
             console.log("Message url is",messageUrl.secure_url);
-            var url = messageUrl.secure_url
+            var imgURL = messageUrl.secure_url
         }
 
-        let sentMessage
+        
         if(message){
             sentMessage = await createMessage(senderId, receiverId, message)
             console.log("sent msg",sentMessage)
             
         }
-        else{
-            sentMessage = await createMediaMessage(senderId, receiverId, url, fileType)
+
+        if(file){
+            sentMessage = await createMediaMessage(senderId, receiverId, imgURL, fileType)
             console.log('media sent msg',sentMessage)
-    
         }
 
         const oldChats = await Chat.findOne(
@@ -91,7 +120,7 @@ exports.sendChatMessage = async (req, res) => {
             }
         )
 
-        console.log("Old Chat: ", oldChats)
+        // console.log("Old Chat: ", oldChats)
 
         // if no old chat is found we need to create a new one and push it in both the users chat
         if (!oldChats) {
@@ -125,7 +154,7 @@ exports.sendChatMessage = async (req, res) => {
                 return res.status(200).json({
                     success: true,
                     message: "New Chat Created SuccessFully!!",
-                    messages: sentMessage
+                    messages: [sentMessage]
                 })
             } catch (error) {
                 return res.status(500).json({
@@ -161,8 +190,8 @@ exports.sendChatMessage = async (req, res) => {
             model: "Message",
         })
 
-        console.log("Updated Chat: ", updatedChat)
-        console.log(messages)
+        // console.log("Updated Chat: ", updatedChat)
+        // console.log(messages)
 
         return res.status(200).json({
             success: true,
@@ -319,7 +348,7 @@ exports.getChatMessages = async (req, res) => {
         {
             return res.status(200).json({
                 success: true,
-                message: "Chat between users"
+                message: "No Chat between users"
             })
         }
         // console.log("after sending status")
@@ -349,7 +378,7 @@ exports.getChatMessages = async (req, res) => {
             path: "messages",
             model: "Message",
         })
-        console.log(_id)
+        // console.log(_id)
         // console.log("messages",messages)
 
         // console.log("unseen-messages", unseenMessages)

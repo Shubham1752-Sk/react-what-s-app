@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { FaSearch } from "react-icons/fa"
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { IoMdPersonAdd } from "react-icons/io";
-import { addToContacts, getUserInfo } from '../../../services/operations/UserAPI';
+import { addToContacts } from '../../../services/operations/UserAPI';
 import { getAllUsers } from '../../../services/operations/ChatAPI';
 
-const SearchBar = ({ user, allUsers }) => {
+const SearchBar = ({ user, }) => {
 
   const dispatch = useDispatch()
 
@@ -16,7 +16,7 @@ const SearchBar = ({ user, allUsers }) => {
   const [viewtext, setViewText] = useState(false)
 
 
-  const { loading } = useSelector((state) => state.chat)
+  // const { loading } = useSelector((state) => state.chat)
   // const [user, setUser] = useState()
 
   // const { users } = useSelector((state) => state.chat)
@@ -52,7 +52,7 @@ const SearchBar = ({ user, allUsers }) => {
   // console.log(users)
 
   return (
-        <div className='h-[7%] w-full flex justify-around gap-2 flex-wrap items-center mt-4 px-4 py-2 rounded-lg bg-white bg-opacity-20 backdrop-blur-sm shadow-sm shadow-black'>
+        <div className='h-[7%]  w-full flex justify-around gap-2 flex-wrap items-center px-4 py-2 rounded-lg bg-white bg-opacity-20 backdrop-blur-sm shadow-sm shadow-black'>
           <div className='w-full h-full flex justify-center items-center gap-2'>
             <div className=' w-11/12 '>
               <input

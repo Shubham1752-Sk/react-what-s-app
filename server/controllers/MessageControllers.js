@@ -4,7 +4,7 @@ const Chat = require("../models/Chat")
 const Profile = require("../models/Profile")
 const Message = require("../models/Message")
 
-exports.createMessage = async(senderId, receiverId, message)=>{
+exports.createMessage = async(senderId, receiverId, message, url)=>{
     try {
         const id =(new mongoose.Types.ObjectId(receiverId));
         
@@ -61,6 +61,9 @@ exports.createMessage = async(senderId, receiverId, message)=>{
 exports.createMediaMessage = async (senderId, receiverId, url, fileType) =>{
     const id =(new mongoose.Types.ObjectId(receiverId));
         
+    console.log("url is: ",url)
+    console.log("fileType is: ",fileType)
+
     const {additionalInfo} =await User.findById(id)
     .select("additionalInfo")
     .populate({
@@ -74,7 +77,7 @@ exports.createMediaMessage = async (senderId, receiverId, url, fileType) =>{
             const createdMessage = await Message.create({
                 media: {
                     url: url,
-                    media_type: fileType
+                    media_type: fileType ? fileType : "audio"
                 },
                 sentBy: senderId,
                 sentTo: receiverId,

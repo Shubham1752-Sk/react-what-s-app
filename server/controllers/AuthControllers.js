@@ -51,7 +51,7 @@ exports.sendotp = async (req, res, next) =>{
             console.log(err)
             return res.status(500).json({
                 success:false,
-                message:"Internal Sevrer Error"
+                message:"Internal Sevrer Error while sending Verification E-mail"
             })
         }
         res.status(200).json({
@@ -180,7 +180,10 @@ exports.login = async ( req, res, next)=>{
         } 
 
         // find user with entered email
-        const user = await User.findOne({email})
+        const user = await User.findOne({email}).populate({
+            path:'additionalInfo',
+            model:"Profile"
+        })
         
         // if no user is found with this e-mail
         if(!user){
@@ -200,10 +203,9 @@ exports.login = async ( req, res, next)=>{
             
             // save token to user document in Database
             user.token = token
-
-            user.additionalInfo.isActive = 'online';
-
             await user.save()
+            
+            await updateOnlineStatus(token, "online")
 
             user.password = undefined
 
@@ -231,5 +233,27 @@ exports.login = async ( req, res, next)=>{
             success: false,
             message: error.message
         })
+    }
+}
+
+const updateOnlineStatus = async(token, status) =>{
+    try{
+        // console.log(token)
+        // console.log(status)
+        const { additionalInfo}= await User.findOne({token: token}).select("additionalInfo")
+
+        // console.log(additionalInfo)
+        await Profile.findByIdAndUpdate(
+            {_id: additionalInfo},
+            {
+                $set: {"isActive" : status}
+            },
+            {new: true}
+        )
+
+        // console.log(updatedProfile)
+    }
+    catch(error){
+        throw new Error(`Error while updating user Online Status ${error}`)
     }
 }

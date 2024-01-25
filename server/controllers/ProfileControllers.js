@@ -2,6 +2,7 @@
 const User = require('../models/User');
 const Profile = require("../models/Profile")
 const {uploadToCloudinary} = require("../utils/imageUploader")
+const cloudinary = require('cloudinary')
 
 exports.getProfileDetails = async(req, res) =>{
     try {
@@ -20,7 +21,7 @@ exports.getProfileDetails = async(req, res) =>{
             path:"additionalInfo",
             model: 'Profile'
         });
-        console.log("user is: ",user)
+        // console.log("user is: ",user)
         if(!user){
             return res.status(401).json({
                 success: false,
@@ -42,81 +43,78 @@ exports.getProfileDetails = async(req, res) =>{
     }
 }
 
-exports.updateProfilePicture = async(req,res)=>{
-    try {
-        console.log(req.files)
-        const displayPicture = req.files.displayPicture
-        const id = req.files.id;
+// exports.updateProfilePicture = async(req,res)=>{
+//     try {
+//         console.log(req.files)
+//         const displayPicture = req.files.displayPicture
+//         const id = req.files.id;
 
-        const user = await User.findById(id);
+//         const user = await User.findById(id);
 
-        console.log(process.env.FOLDER_NAME)
-        const image = await uploadToCloudinary(
-            displayPicture,
-            process.env.FOLDER_NAME,
-            1000,
-            1000
-        )
-        console.log(image);
+//         // console.log(process.env.FOLDER_NAME)
 
-        const updatedUser = await User.findByIdAndUpdate(
-            {_id: id},
-            {profilePhoto: image.secure_url}
-        )
-        res.send({
-            success: true,
-            message: `Image Updated successfully`,
-            updatedUser
-          })
-    } catch (error) {
-        return res.status(500).json({
-        success: false,
-        message: error.message,
-        })
-    }
-}
+//         // const image = await cloudinary.uploader.upload({
+//         //     folder: process.env.CLOUDINARY_UPLOAD_DIR,
+//         // })
+//         const image = await uploadToCloudinary(profilePhoto,{
+//             folder: process.env.FOLDER_NAME,
+//             resource_type: "image"
+//         })
+//         console.log(image);
+
+//         const updatedUser = await User.findByIdAndUpdate(
+//             {_id: id},
+//             {profilePhoto: image.secure_url}
+//         )
+//         res.send({
+//             success: true,
+//             message: `Image Updated successfully`,
+//             updatedUser
+//           })
+//     } catch (error) {
+//         return res.status(500).json({
+//         success: false,
+//         message: error.message,
+//         })
+//     }
+// }
 
 exports.updateProfile = async(req, res) =>{
     try {
-        console.log("in the controller")
-        console.log("req.body: ",req.body)
-        const {id, about, gender, dateofBirth } = req.body;
-        console.log("req.files: ",req.files)
-        const profilePhoto=req.files.profilePhoto;
+        
+        // console.log("req.body: ",req.body)
+        const {id, about, gender, dateofBirth, profilePhoto } = req.body;
         // const file = req.files.imagefile; 
         
-        const user = await User.findById(id);
-        const profile = await Profile.findById(user.additionalInfo);
+        const {additionalInfo} = await User.findById(id).select('additionalInfo');
+        const profile = await Profile.findById({_id: additionalInfo});
 
-        const image = await uploadToCloudinary(
-            profilePhoto,
-            process.env.FOLDER_NAME,
-            200,
-            1000
-        )
+        const image = await uploadToCloudinary(profilePhoto,{
+            folder: process.env.FOLDER_NAME,
+            resource_type: "image"
+        })
         console.log(image)
         // updating user profile image
-        await User.findByIdAndUpdate(
+        const updatedUser = await User.findByIdAndUpdate(
             {_id: id},
-            {profilePhoto: image.secure_url}
+            {$set: {profilePhoto: image.secure_url}},
+            {new: true}
         )
+        // console.log(updatedUser)
 
         profile.dateOfBirth = dateofBirth;
         profile.gender = gender;
         profile.about = about;
 
-        console.log(image)
-
         profile.save();
 
-        const updatedUserDetails = await User.findById(id)
-        .populate("additionalInfo")
-        .exec()
+        const updatedProfileDetails = await Profile.findById({_id: additionalInfo})
+        console.log("updated Profile: ",updatedProfileDetails)
 
         return res.json({
             success: true,
             message: "Profile updated successfully",
-            updatedUserDetails,
+            updatedUser
         })
     } catch (error) {
         return res.status(500).json({

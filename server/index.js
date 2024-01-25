@@ -7,7 +7,6 @@ const cloudinary = require("./config/cloudinary");
 const http = require("http");
 const { Server } = require("socket.io");
 
-
 const AuhtRoutes = require("./routes/AuthRoutes")
 const profileRoutes = require("./routes/ProfileRoutes")
 const chatRoutes = require("./routes/ChatRoutes")
@@ -33,10 +32,14 @@ app.use(cors({
     origin:"*",
 }))
 app.use(fileUpload({useTempFiles: true}))
+app.use(express.urlencoded({
+    extended : false
+}))
 
 database.connectToTB();
 cloudinary.connectToCloduinary()
 
+// app.use("/sendchatmessage",express.static("uploads/recordings"))
 app.use("/api/v1/auth",AuhtRoutes)
 app.use("/api/v1/profile",profileRoutes)
 app.use("/api/v1/chat",chatRoutes)
@@ -51,30 +54,39 @@ app.get('/',(req,res)=>{
 // })
 
 const onlineUsers = new Map()
-// io.on("connection", (socket) => {
-//     console.log("new connection",socket.id)
+io.on("connection", (socket) => {
+    console.log("new connection",socket.id)
 
-//     socket.on("joined",(data)=>{
-//         console.log(data);
-//         console.log(`${data._id} has joined`)
-//     })
-//     // global.chatSocket = socket;
-//     // socket.on("add-user", (userId) =>{
-//     //     // console.log(userId)
-//     //     onlineUsers.set(userId, socket.id)
-//     // });
-//     // console.log(onlineUsers)
-//     socket.on("send-msg",async(data)=>{
-//         console.log("send event emited")
-//         const sendUserSocket =await onlineUsers.get(data.to._id)
-//         if(sendUserSocket){
-//             socket.to(sendUserSocket).emit("msg-received",{
-//                 from: data.from,
-//                 message: data.message
-//             })
-//         }
-//     })
-//   });
+    socket.on("joined",({user})=>{
+        console.log(user);
+        console.log(`${user._id} has joined`)
+        onlineUsers.set(user._id, socket.id)
+        console.log(onlineUsers)
+    })
+    // global.chatSocket = socket;
+    
+    socket.on("send-msg",async(data)=>{
+        console.log("send event emited")
+        console.log(data)
+        console.log(onlineUsers)
+        const receiverSocket = await onlineUsers.get(data.to)
+        console.log(`receiver ${data.to} socket is: `,receiverSocket)
+        if(receiverSocket){
+            socket.to(receiverSocket).emit("msg-received",{
+                from: data.from,
+                message: data.message,
+
+            })
+        }
+    })
+    socket.on('update-msg-status',async(data)=>{
+        console.log('update msg status event emitted')
+        const senderSocket = await onlineUsers.get(data.to)
+        console.log(senderSocket)
+        socket.to(senderSocket).emit('msg-seen')
+
+    })
+  });
   
 httpServer.listen(PORT,()=>{
     console.log(`Server is running `)

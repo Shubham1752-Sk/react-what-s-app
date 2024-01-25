@@ -81,7 +81,7 @@ const CreateProfile = () => {
             ...formData,
             [e.target.name]: e.target.value
         })
-        console.log(formData)
+        // console.log(formData)
     }
 
     const handleSubmit = (e) =>{
@@ -125,7 +125,7 @@ const CreateProfile = () => {
                         <div className=' relative w-10/12 h-1/3 gap-5 mx-auto justify-center items-center sm:flex sm:h-1/2  '>
                             <div className='mx-auto gap-4 h-1/2 flex justify-center items-baseline sm:w-5/12 bg-black bg-opacity-10 sm:h-full sm:flex-col sm:justify-around sm:items-center py-4 '>
                                 <InputFeild user={user} title={"Display name"} />
-                                <InputFeild user={user} title={"About"} />
+                                <InputFeild user={user} title={"About"} formData={formData} handleFormChannge={handleFormChannge}/>
                                 <button 
                                     className=" relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-gray-900 font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900" 
                                     onClick={handleSubmit}

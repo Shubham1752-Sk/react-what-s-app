@@ -27,7 +27,6 @@ exports.findUserByToken = async(req, res)=>{
             })
         })
 
-        // console.log(user)
         if(!user){
             return res.status(400).json({
                 success:false,
@@ -36,6 +35,7 @@ exports.findUserByToken = async(req, res)=>{
         }
 
         user.password = undefined
+        user.token = undefined
 
         return res.status(200).json({
             success: true,
@@ -119,7 +119,7 @@ exports.addToContacts = async (req, res) =>{
             {new: true}
         )
         
-        console.log(updatedUser)
+        // console.log(updatedUser)
 
         return res.status(200).json({
             success: true,
@@ -172,7 +172,7 @@ exports.removeFromContacts = async(req, res)=>{
             {new: true},
         )
 
-        console.log(updatedUser)
+        // console.log(updatedUser)
 
         res.status(200).json({
             success: true,

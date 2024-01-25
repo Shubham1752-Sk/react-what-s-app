@@ -2,6 +2,7 @@ import { toast } from "react-hot-toast";
 import { apiConnector } from "../apiConnector";
 import { setLoading, } from "../../slices/ProfileSlice";
 import { profileEndpoints } from "../apis";
+import { setUser } from "../../slices/ChatSlice";
 
 const {
     PROFILE_DETAILS,
@@ -46,8 +47,9 @@ export function updateProfile(id,about, gender, dateOfBirth, profilePhoto, dispa
             if (!response.data.success) {
                 throw new Error(response.data.message)
             }
-            console.log("Profile Updated sucessfully !!")
-            navigate("/login")
+            console.log("response of Update Profile API...",response.data.updatedUser)
+            dispatch(setUser({ ...response.data.user }))
+            // navigate("/login")
         } catch (error) {
             console.log("Error in update profile API....",error)
         }
