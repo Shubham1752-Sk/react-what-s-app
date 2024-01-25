@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { getChatMessages } from '../services/operations/ChatAPI'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import { getUserInfo } from '../services/operations/UserAPI'
 import socketIo from "socket.io-client"
-import { io } from "socket.io-client";
 
 import SearchBar from '../components/core/Chat/SearchBar'
 import Spinner from "../components/common/Spinner"
@@ -36,20 +34,6 @@ const Chat = () => {
       // console.log("getting user info")
       dispatch(getUserInfo(token))
     }
-
-    // const socket = io(ENDPOINT);
-    
-
-    // socket.connect()
-
-    // io.socket.on('connection', function(socket){
-    //   console.log("new client connected");
-    // });
-
-    
-
-    // return()=>{
-    // }
 
   }, [])
 
