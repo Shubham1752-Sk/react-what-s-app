@@ -30,6 +30,7 @@ app.use(express.json({
   }));
 app.use(cors({
     origin:"*",
+    methods: ["GET", "POST"]
 }))
 app.use(fileUpload({useTempFiles: true}))
 app.use(express.urlencoded({

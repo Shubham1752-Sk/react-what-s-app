@@ -34,7 +34,6 @@ const ChatMessage = memo(function({ message, user, isHovered, setHovered }){
         }
     }
 
-    
 
     return (
         <div className={`relative flex items-center ${message.sentBy === user._id ? "justify-end" : "justify-start"} px-2 py-1 rounded-md m-2 box-border `}>
