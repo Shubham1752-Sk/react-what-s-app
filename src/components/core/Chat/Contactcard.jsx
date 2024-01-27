@@ -1,6 +1,8 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import defaultAvatar from  "../../../assets/default_avatar.png"
+
 const Contactcard = ({ user, isContact, isSuggestion, manageChat, addToContacts }) => {
   const navigate = useNavigate()
   return (
@@ -13,13 +15,13 @@ const Contactcard = ({ user, isContact, isSuggestion, manageChat, addToContacts 
     >
       <div className={`w-16 h-16 max-w-[65px] max-h-[65px] flex justify-center items-center border-2 p-0.5 ${ !isContact && !isSuggestion && "border-black hover:p-1 duration-75 hover:border-4" }  rounded-full `}>
         <img
-          src={user.profilePhoto}
+          src={user?.profilePhoto || defaultAvatar}
           alt="avatar"
           className='rounded-full w-full h-full'
         />
       </div>
       <div className='flex-col '>
-        <p className={`text-xl ${ !isContact && !isSuggestion ? "text-black" : "text-secondary-green"} `} >{`${user.firstName} ${user.lastName}`}</p>
+        <p className={`text-sm sm:text-base md:text-xl ${ !isContact && !isSuggestion ? "text-black" : "text-secondary-green"} `} >{`${user.firstName} ${user.lastName}`}</p>
         {/* <p className='text-sm text-secondary-green'>last message</p> */}
       </div>
     </div>

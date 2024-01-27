@@ -39,12 +39,15 @@ const Chat = () => {
 
   useEffect(()=>{
     const socket = socketIo(ENDPOINT)
-    socket.on('connect',()=>{
-      // console.log(socket.id)
-      setSocketID(socket)
-      // console.log("socket is: ",socketID)
-      // alert("connected");
-    })
+    if(user){
+      socket.on('connect',()=>{
+        // console.log(socket.id)
+        setSocketID(socket)
+        socket.emit('joined', { user })
+        // console.log("socket is: ",socketID)
+        // alert("connected");
+      })
+    }
   },[])
 
 
@@ -60,8 +63,9 @@ const Chat = () => {
     dispatch(getChatMessages(user._id, contact._id))
     setViewChat(true)
     setChatUser(contact)
+    console.log(`set user is : `,chatUser)
     if(socketID){
-      socketID.emit('update-msg-status',{to: contact._id})
+      socketID.emit('update-msg-status',{to: contact._id, from: user._id})
     }
     // console.log(chatUser)
   }

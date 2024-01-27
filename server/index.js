@@ -73,9 +73,7 @@ io.on("connection", (socket) => {
         console.log(`receiver ${data.to} socket is: `,receiverSocket)
         if(receiverSocket){
             socket.to(receiverSocket).emit("msg-received",{
-                from: data.from,
-                message: data.message,
-
+                from: data.from
             })
         }
     })
@@ -83,7 +81,7 @@ io.on("connection", (socket) => {
         console.log('update msg status event emitted')
         const senderSocket = await onlineUsers.get(data.to)
         console.log(senderSocket)
-        socket.to(senderSocket).emit('msg-seen')
+        socket.to(senderSocket).emit('msg-seen',{from: data.from})
 
     })
   });

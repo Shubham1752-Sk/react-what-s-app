@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { RiCheckDoubleFill } from "react-icons/ri";
 import { IoMdCheckmark } from "react-icons/io";
 import { MdFileDownload } from "react-icons/md";
+import {getTime} from "../../../utils/getTime"
 import AudioMessage from './AudioMessage';
 
-const ChatMessage = ({ message, user, isHovered, setHovered }) => {
+const ChatMessage = memo(function({ message, user, isHovered, setHovered }){
 
     const handleDownload = async (url) => {
         console.log(url)
@@ -33,13 +34,7 @@ const ChatMessage = ({ message, user, isHovered, setHovered }) => {
         }
     }
 
-    const getDate = (date) => {
-        const d = new Date(date).toLocaleTimeString().split(" ")
-        const hr = d[0].split(":")[0]
-        const min = d[0].split(":")[1]
-        // console.log(`${hr}:${min} ${d[1]}`)
-        return (`${hr}:${min} ${d[1]}`)
-    }
+    
 
     return (
         <div className={`relative flex items-center ${message.sentBy === user._id ? "justify-end" : "justify-start"} px-2 py-1 rounded-md m-2 box-border `}>
@@ -63,7 +58,7 @@ const ChatMessage = ({ message, user, isHovered, setHovered }) => {
                     </video> : <AudioMessage message={message} />}
                 </div>
                 <div className={` ${message.sentBy === user._id ? "w-[4.5rem]" : "w-13"} w-full z-20 flex gap-1 items-end text-end mt-1 justify-end text-xs text-gray-400`}>
-                    <p>{getDate(message.createdAt)}</p>
+                    <p>{getTime(message.createdAt)}</p>
                     {
                         message.status === 'sent' ? (
                             <div className={`${message.sentBy === user._id ? "block" : "hidden"}`}><IoMdCheckmark /></div>
@@ -81,6 +76,6 @@ const ChatMessage = ({ message, user, isHovered, setHovered }) => {
 
         </div>
     )
-}
+})
 
 export default ChatMessage
