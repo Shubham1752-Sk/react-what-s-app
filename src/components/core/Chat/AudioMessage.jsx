@@ -6,7 +6,7 @@ import WaveSurfer from 'wavesurfer.js';
 
 const AudioMessage = ({message}) => {
 
-  console.log(message)
+//   console.log(message)
   const [isPlaying, setIsPlaying] = useState(false)
 //   const [waveform, setWaveForm] = useState(null)
   const [recordedAudio, setRecordedAudio] = useState(null)
@@ -59,9 +59,9 @@ const handlePauseRecording = () => {
         // setRecordedAudio(audio);
         // waveform.load(message.media.url);
         const audioFile = new File([message.media.url],"recording.mp3")
-        console.log(audioFile)
+        // console.log(audioFile)
         const audioURL = `http://localhost:3000/${message.media.url}`
-        console.log("audioURL is: ",audioURL)
+        // console.log("audioURL is: ",audioURL)
         // const audioElement = new Audio();
         // audioElement.src = URL.createObjectURL(message.media.url);
    },[])

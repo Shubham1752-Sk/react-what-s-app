@@ -63,7 +63,7 @@ const Chat = () => {
     dispatch(getChatMessages(user._id, contact._id))
     setViewChat(true)
     setChatUser(contact)
-    console.log(`set user is : `,chatUser)
+    // console.log(`set user is : `,chatUser)
     if(socketID){
       socketID.emit('update-msg-status',{to: contact._id, from: user._id})
     }

@@ -14,7 +14,7 @@ const ProfileSelector = ({options}) => {
 
   const handleProfileChange = (e) => {
     const {files} = e.target;
-    console.log(files)
+    // console.log(files)
     if(!files.length){return;}
     // const filename = files[0].name;
     // var parts = filename.split(".");
@@ -32,10 +32,6 @@ const ProfileSelector = ({options}) => {
     //   options.setDefaultAvatar(reader.result);
     // }
     options.setDefaultAvatar(URL.createObjectURL(e.target.files[0]))
-  }
-
-  const handleClick = () =>{
-    console.log("option clicked")
   }
 
   return (

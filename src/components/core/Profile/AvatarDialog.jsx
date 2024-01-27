@@ -4,14 +4,14 @@ import { AvatarOptions } from '../../../utils/constants'
 const AvatarDialog = ({setDefaultAvatar}) => {
     
     const setAvatarImage = (key) =>{
-        console.log(key)
+        // console.log(key)
         // console.log(AvatarOptions.filter((avatar)=> avatar.key===key)[0].img)
         const img = AvatarOptions.filter((avatar)=> avatar.key===key)[0].img;
-        console.log(img)
+        // console.log(img)
         const reader = new FileReader();
         reader.readAsDataURL(img);
         reader.onload=()=>{
-        console.log(reader);
+        // console.log(reader);
         setDefaultAvatar(reader.result);
         }
     }

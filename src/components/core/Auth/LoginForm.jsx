@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 import { login } from '../../../services/operations/authAPI'
-import { getUserInfo } from '../../../services/operations/UserAPI'
 
 const LoginForm = () => {
 
@@ -34,7 +33,7 @@ const LoginForm = () => {
   const loginHandler = (e) =>{
     e.preventDefault();
 
-    console.log(formData)
+    // console.log(formData)
 
     dispatch(login(formData.email, formData.password, navigate))
   }

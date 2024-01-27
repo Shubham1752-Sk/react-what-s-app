@@ -86,7 +86,7 @@ const CreateProfile = () => {
 
     const handleSubmit = (e) =>{
         e.preventDefault();
-        console.log(formData)
+        // console.log(formData)
 
         if( !formData.dateOfBirth || !formData.gender ){
             alert('Dob and Gender are Compulsory Fields!!');

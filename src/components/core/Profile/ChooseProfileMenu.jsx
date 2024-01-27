@@ -7,10 +7,10 @@ const ChooseProfileMenu = ({fileInput, webCamRef, options}) => {
     // console.log(options)
 
     const handleClick = (key) =>{
-        console.log(key)
+        // console.log(key)
         // to view the avatar dialog 
         if(key==='1'){
-            console.log("Option 1 pressed!!")
+            // console.log("Option 1 pressed!!")
             options.setViewDialog(true)
             options.setViewCameraDialog(false);
             options.setViewAvatarDialog(true)
@@ -20,13 +20,12 @@ const ChooseProfileMenu = ({fileInput, webCamRef, options}) => {
         }
         // to open system files
         if(key==='2'){
-            
             fileInput.current.click();
         }
         
         // to open camera
         if(key==='3'){
-            console.log("Option 3 pressed!!")
+            // console.log("Option 3 pressed!!")
             options.setViewDialog(true)
             options.setViewAvatarDialog(false)
             options.setViewCameraDialog(true)
@@ -35,7 +34,7 @@ const ChooseProfileMenu = ({fileInput, webCamRef, options}) => {
 
         // remove image
         if(key==='4'){
-            console.log("Option 4 pressed!!")
+            // console.log("Option 4 pressed!!")
             options.setDefaultAvatar(defaultImg)
         }
     }

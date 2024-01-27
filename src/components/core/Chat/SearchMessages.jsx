@@ -8,14 +8,8 @@ const SearchMessages = memo(function({setViewSearchMessages}){
 
     const [filteredMessages, setFilteredMessages] = useState(null)
 
-    useEffect(()=>{
-        if(chatMessages){
-            console.log("Chat Messages Present")
-        }
-    },[])
-
     const handleChange = (event) => {
-        console.log(event.target.value)
+        // console.log(event.target.value)
         if(event.target.value.length === 0){
             setFilteredMessages(null)
             return
@@ -24,7 +18,7 @@ const SearchMessages = memo(function({setViewSearchMessages}){
         setFilteredMessages(
             chatMessages.filter((message)=> message?.text.includes(event.target.value))
         )
-        console.log(filteredMessages)
+        // console.log(filteredMessages)
     }
 
   return (

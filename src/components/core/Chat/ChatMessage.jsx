@@ -8,7 +8,7 @@ import AudioMessage from './AudioMessage';
 const ChatMessage = memo(function({ message, user, isHovered, setHovered }){
 
     const handleDownload = async (url) => {
-        console.log(url)
+        // console.log(url)
         try {
             const response = await fetch(url);
             const blob = await response.blob();
@@ -30,7 +30,7 @@ const ChatMessage = memo(function({ message, user, isHovered, setHovered }){
             // Remove the link from the document
             document.body.removeChild(link);
         } catch (error) {
-            console.error('Error downloading file:', error.message);
+            alert('Error downloading file:', error.message);
         }
     }
 

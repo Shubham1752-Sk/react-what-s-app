@@ -45,9 +45,9 @@ const RecordAudio = ({ setrecordAudio, userId, chatUserId }) => {
             mediaRecorder.onstop = () => {
                 const blob = new Blob(chunksRef.current, { type: 'audio/ogg; codecs=opus' });
                 const audioUrl = URL.createObjectURL(blob);
-                console.log(audioUrl)
+                // console.log(audioUrl)
                 const audio = new Audio(audioUrl);
-                console.log(audio)
+                // console.log(audio)
                 setRecordedAudio(audio);
                 waveform.load(audioUrl);
             };
@@ -65,14 +65,14 @@ const RecordAudio = ({ setrecordAudio, userId, chatUserId }) => {
 
             //   const audioChunks = [];
             mediaRecorderRef.current.addEventListener('dataavailable', (event) => {
-                console.log('audio chunks before: ', audioChunksRef.current);
+                // console.log('audio chunks before: ', audioChunksRef.current);
                 audioChunksRef.current.push(event.data);
-                console.log('audio chunks after: ', audioChunksRef.current);
+                // console.log('audio chunks after: ', audioChunksRef.current);
             });
 
             mediaRecorderRef.current.addEventListener('stop', () => {
                 const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/mp3' });
-                console.log(audioBlob)
+                // console.log(audioBlob)
                 const audioFile = new File([audioBlob], 'recording.mp3');
                 setRenderedAudio(audioFile);
             });
@@ -104,8 +104,8 @@ const RecordAudio = ({ setrecordAudio, userId, chatUserId }) => {
         if (renderedAudio) {
             // console.log(media)
             resetStates()
-            const blobURL = URL.createObjectURL(renderedAudio);
-            console.log(blobURL)
+            // const blobURL = URL.createObjectURL(renderedAudio);
+            // console.log(blobURL)
             dispatch(sendMediaMessage({
                 senderId: userId,
                 receiverId: chatUserId,
@@ -174,8 +174,8 @@ const RecordAudio = ({ setrecordAudio, userId, chatUserId }) => {
     function calculateDurationInMins(duration) {
         seconds = Math.floor(duration % 60);
         minutes = Math.floor(duration / 60);
-        console.log('seconds: ', seconds);
-        console.log('minutes: ', minutes);
+        // console.log('seconds: ', seconds);
+        // console.log('minutes: ', minutes);
     }
 
     return (

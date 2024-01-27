@@ -123,28 +123,28 @@ const ChatDialog = memo(function ChatDialog({ user, chatUser, socketID }) {
 
 
     useEffect(() => {
-        console.log("in the Chat Dialoag socket: ", socketID)
+        // console.log("in the Chat Dialoag socket: ", socketID)
         scrollToBottom()
         
         if(socketID){
             socketID.on('msg-received',(data)=>{
                 // console.log(`Current Chat user is: ${chatUser._id}`)
                 if(data.from === chatUser._id){
-                    console.log("new msg received from server : ", data.from);
+                    // console.log("new msg received from server : ", data.from);
                     dispatch(getChatMessages(user._id, chatUser._id))
                     socketID.emit('update-msg-status',{to: data.from})
                 }
                 else{
-                    console.log("new msg received from server : ", data.from, " bt u r in another chat");
+                    // console.log("new msg received from server : ", data.from, " but u r in another chat");
                 }
             })
     
             socketID.on('msg-seen', (data) => {
-                console.log("ur msgs have been read")
-                console.log(data)
-                console.log(chatUser._id)
+                // console.log("ur msgs have been read")
+                // console.log(data)
+                // console.log(chatUser._id)
                 if( data.from === chatUser._id){
-                    console.log("u r in chat")
+                    // console.log("u r in chat")
                     dispatch(getChatMessages(user._id, chatUser._id))
                 }
             })
@@ -164,10 +164,6 @@ const ChatDialog = memo(function ChatDialog({ user, chatUser, socketID }) {
     useEffect(()=>{
         scrollToBottom()
     },[chatMessages, chatUser])
-
-    useEffect(()=>{
-        console.log(viewDoc)
-    },[viewSearchMessages])
 
     return (
         <div className='w-full h-full flex-col justify-center items-center ' onClick={handleOutsideClick}>
@@ -259,7 +255,7 @@ const ChatDialog = memo(function ChatDialog({ user, chatUser, socketID }) {
                                         }
                                         if (media) {
                                             setMedia("")
-                                            console.log(media)
+                                            // console.log(media)
                                         }
                                     }}
                                 >
