@@ -1,0 +1,32 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities"; 
+
+.chat-bg{
+    background-image:url('./assets/chat-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: max-content;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+}
+ 
+/* Track */
+/* ::-webkit-scrollbar-track {
+    background: #888;
+    border-radius: 5px;
+} */
+ 
+/* Handle */
+/* ::-webkit-scrollbar-thumb {
+    background: #000;
+    border-radius: 5px;
+} */
+ 
+/* Handle on hover */
+/* ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+} */
