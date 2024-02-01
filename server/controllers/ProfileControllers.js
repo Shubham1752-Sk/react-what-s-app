@@ -93,7 +93,7 @@ exports.updateProfile = async(req, res) =>{
             folder: process.env.FOLDER_NAME,
             resource_type: "image"
         })
-        console.log(image)
+        // console.log(image)
         // updating user profile image
         const updatedUser = await User.findByIdAndUpdate(
             {_id: id},
@@ -109,7 +109,7 @@ exports.updateProfile = async(req, res) =>{
         profile.save();
 
         const updatedProfileDetails = await Profile.findById({_id: additionalInfo})
-        console.log("updated Profile: ",updatedProfileDetails)
+        // console.log("updated Profile: ",updatedProfileDetails)
 
         return res.json({
             success: true,

@@ -81,20 +81,20 @@ exports.sendChatMessage = async (req, res) => {
                 folder:process.env.FOLDER_NAME ,
                 resource_type: fileType === 'image' ? 'image' : "video",
             })
-            console.log("Message url is",messageUrl.secure_url);
+            // console.log("Message url is",messageUrl.secure_url);
             var imgURL = messageUrl.secure_url
         }
 
         
         if(message){
             sentMessage = await createMessage(senderId, receiverId, message)
-            console.log("sent msg",sentMessage)
+            // console.log("sent msg",sentMessage)
             
         }
 
         if(file){
             sentMessage = await createMediaMessage(senderId, receiverId, imgURL, fileType)
-            console.log('media sent msg',sentMessage)
+            // console.log('media sent msg',sentMessage)
         }
 
         const oldChats = await Chat.findOne(

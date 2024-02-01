@@ -61,8 +61,8 @@ exports.createMessage = async(senderId, receiverId, message, url)=>{
 exports.createMediaMessage = async (senderId, receiverId, url, fileType) =>{
     const id =(new mongoose.Types.ObjectId(receiverId));
         
-    console.log("url is: ",url)
-    console.log("fileType is: ",fileType)
+    // console.log("url is: ",url)
+    // console.log("fileType is: ",fileType)
 
     const {additionalInfo} =await User.findById(id)
     .select("additionalInfo")

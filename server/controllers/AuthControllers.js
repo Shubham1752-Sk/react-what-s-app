@@ -43,7 +43,7 @@ exports.sendotp = async (req, res, next) =>{
             createdAt: Date.now()
         })
         // console.log(email);
-        console.log(`saved OTP is ${otpBody}`)
+        // console.log(`saved OTP is ${otpBody}`)
 
         try{
             await sendMail.sendVerificationEmail(email,otpBody.otpCode);
@@ -141,7 +141,7 @@ exports.signUp = async(req, res, next)=>{
             dateOfBirth: null,
             about: null,
         })
-        console.log(profileDetails)
+        // console.log(profileDetails)
         const user = await User.create({
             firstName,
             lastName,
